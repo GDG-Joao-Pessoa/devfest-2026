@@ -1,6 +1,5 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'nodejs';
 export const alt = 'DevFest João Pessoa 2026 — 20 & 21 Nov · Uniesp';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
