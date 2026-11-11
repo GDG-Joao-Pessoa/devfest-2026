@@ -1,9 +1,9 @@
 import Reveal from './Reveal';
+import { VENUE_ADDRESS } from '@/lib/data';
 
 const infos = [
-  { icon: '📍', bg: 'rgba(66,133,244,.16)', text: 'Av. Principal, João Pessoa · PB' },
+  { icon: '📍', bg: 'rgba(66,133,244,.16)', text: VENUE_ADDRESS },
   { icon: '🚗', bg: 'rgba(52,168,83,.16)', text: 'Estacionamento no local' },
-  { icon: '🏨', bg: 'rgba(251,188,4,.16)', text: 'Hotéis parceiros com desconto' },
 ];
 
 export default function Local() {
@@ -13,7 +13,8 @@ export default function Local() {
       id="local"
       style={{ maxWidth: 1100, margin: '0 auto', padding: '70px 40px 90px', scrollMarginTop: 80 }}
     >
-      <div className="local-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+      {/* Colunas definidas em .local-grid (globals.css) para poderem empilhar no mobile. */}
+      <div className="local-grid" style={{ gap: 40 }}>
         <div>
           <div
             style={{
@@ -39,8 +40,9 @@ export default function Local() {
               color: 'rgba(242,242,247,.66)',
             }}
           >
-            Estrutura completa, auditórios, salas de workshop e área de convivência — no coração de
-            João Pessoa, com fácil acesso e estacionamento.
+            Estrutura completa, auditórios, salas de workshop e área de convivência — na Grande João
+            Pessoa, com acesso pela <span style={{ whiteSpace: 'nowrap' }}>BR-230</span> e
+            estacionamento.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 28 }}>
             {infos.map((info) => (
@@ -65,9 +67,9 @@ export default function Local() {
           </div>
         </div>
         <div
+          className="local-map"
           style={{
             position: 'relative',
-            height: 340,
             borderRadius: 20,
             overflow: 'hidden',
             border: '1px solid rgba(255,255,255,.09)',

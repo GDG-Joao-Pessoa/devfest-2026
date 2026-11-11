@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 // Static map of motion components. These MUST live outside the render function:
 // calling motion(tag) during render creates a brand-new component type on every
 // render, which makes React unmount/remount the subtree — replaying the reveal
-// animation on every state change (the FAQ/Agenda "flicker").
+// animation on every state change (the FAQ/tabs "flicker").
 const MOTION_TAGS = {
   div: motion.div,
   section: motion.section,

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Sora, Figtree, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -53,6 +53,14 @@ export const metadata: Metadata = {
       'A comunidade de tecnologia e inovação se encontra aqui. 20 & 21 Nov · Uniesp · João Pessoa · PB.',
     images: ['/banner/opengraph-image'],
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // Pinta a barra do navegador no mobile com o fundo do site.
+  themeColor: '#08080f',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({

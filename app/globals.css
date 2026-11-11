@@ -13,6 +13,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* evita o iOS aumentar o texto sozinho ao girar para paisagem */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -33,8 +36,11 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: #8ab4f8;
+/* Só em dispositivos com hover real: no toque o :hover "gruda" depois do tap. */
+@media (hover: hover) {
+  a:hover {
+    color: #8ab4f8;
+  }
 }
 
 ::selection {
@@ -68,6 +74,165 @@ a:hover {
   }
 }
 
+/* Wrapper da página: recorta os blobs do hero sem criar um scroll container.
+   Com `overflow-x: hidden` o div virava scroll container e a nav sticky parava
+   de grudar no topo. `hidden` fica como fallback para Safari < 16. */
+.page {
+  position: relative;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* ---------------------------------------------------------------------------
+   Nav
+--------------------------------------------------------------------------- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 40px;
+  background: rgba(8, 8, 15, 0.72);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-shrink: 0;
+}
+.nav-logo-gdg {
+  height: 28px;
+}
+.nav-logo-devfest {
+  height: 26px;
+}
+.nav-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font: 600 13.5px/1 var(--font-figtree);
+  color: rgba(242, 242, 247, 0.72);
+}
+.nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.nav-cta:hover {
+  color: #fff;
+}
+
+/* Menu mobile (components/NavMenu.tsx) */
+.nav-menu {
+  display: none;
+}
+.nav-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: transparent;
+  color: #f2f2f7;
+  cursor: pointer;
+}
+.nav-menu-btn:focus-visible,
+.nav-menu-panel a:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 2px;
+}
+.nav-menu-icon {
+  position: relative;
+  width: 18px;
+  height: 12px;
+}
+.nav-menu-icon > span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.2s, opacity 0.2s, top 0.2s;
+}
+.nav-menu-icon > span:nth-child(1) {
+  top: 0;
+}
+.nav-menu-icon > span:nth-child(2) {
+  top: 5px;
+}
+.nav-menu-icon > span:nth-child(3) {
+  top: 10px;
+}
+.nav-menu-btn[aria-expanded='true'] .nav-menu-icon > span:nth-child(1) {
+  top: 5px;
+  transform: rotate(45deg);
+}
+.nav-menu-btn[aria-expanded='true'] .nav-menu-icon > span:nth-child(2) {
+  opacity: 0;
+}
+.nav-menu-btn[aria-expanded='true'] .nav-menu-icon > span:nth-child(3) {
+  top: 5px;
+  transform: rotate(-45deg);
+}
+.nav-menu-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 22px 16px;
+  background: rgba(8, 8, 15, 0.97);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.9);
+}
+/* `display: flex` acima venceria o [hidden] do preflight */
+.nav-menu-panel[hidden] {
+  display: none;
+}
+.nav-menu-panel a {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font: 600 16px/1.2 var(--font-figtree);
+  color: rgba(242, 242, 247, 0.88);
+}
+.nav-menu-panel a:last-child {
+  border-bottom: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Hero
+--------------------------------------------------------------------------- */
+.hero-pill {
+  font: 600 12px/1 var(--font-ibm);
+  letter-spacing: 2px;
+}
+.hero-title {
+  text-wrap: balance;
+}
+
 /* ---------------------------------------------------------------------------
    Responsive — the design is desktop-first (fixed columns / large type).
    Collapse grids and scale headings down on smaller screens.
@@ -82,11 +247,29 @@ a:hover {
   align-items: center;
 }
 
+.local-map {
+  height: 340px;
+}
+
 @media (max-width: 900px) {
+  /* Nav: links viram menu hambúrguer (entre 721 e 900px eles espremiam os logos) */
+  .nav-link {
+    display: none;
+  }
+  .nav-menu {
+    display: block;
+  }
+  .nav-links {
+    gap: 10px;
+  }
+
   .sobre-grid,
   .local-grid {
     grid-template-columns: 1fr;
     gap: 40px;
+  }
+  .local-map {
+    height: 280px;
   }
   .trilhas-grid,
   .ingressos-grid {
@@ -111,35 +294,47 @@ a:hover {
     width: 100% !important;
     height: 1px !important;
   }
-}
-
-@media (max-width: 720px) {
-  /* Hide secondary nav links, keep the Ingressos CTA */
-  .nav-link {
-    display: none;
-  }
-  /* Agenda rows stack the track chip under the title */
-  .agenda-row {
-    grid-template-columns: 90px 1fr !important;
-  }
-  .agenda-row > span:last-child {
-    grid-column: 1 / -1;
-    justify-self: start;
+  .hero-bar-cta {
+    text-align: center;
   }
 }
 
 @media (max-width: 560px) {
-  section {
+  section,
+  header,
+  footer,
+  .site-nav {
     padding-left: 22px !important;
     padding-right: 22px !important;
   }
-  header {
-    padding-left: 22px !important;
-    padding-right: 22px !important;
+  .site-nav {
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
-  h1 {
-    font-size: 44px !important;
-    letter-spacing: -1.5px !important;
+  .nav-logo-gdg {
+    height: 24px;
+  }
+  .nav-logo-devfest {
+    height: 22px;
+  }
+  .nav-brand {
+    gap: 10px;
+  }
+  .nav-cta {
+    padding: 0 16px;
+    min-height: 44px;
+  }
+  /* H1 é fluido (clamp no Hero); aqui só soltamos as quebras fixas. */
+  .hero-br {
+    display: none;
+  }
+  .hero-pill {
+    letter-spacing: 1px;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .hero-pill-city {
+    display: none;
   }
   h2 {
     font-size: 32px !important;
@@ -147,5 +342,389 @@ a:hover {
   .speakers-grid,
   .sponsor-grid {
     grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Logo DevFest sai da nav (o hero mostra logo abaixo) para caber o CTA + menu */
+  .nav-divider,
+  .nav-logo-devfest {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Programação — components/Programacao.tsx
+   Desktop (≥ 900px): coluna de horário + Auditório Master | Auditório Executivo.
+   Mobile (< 900px): lista por horário, cada sessão vira um card com o selo do
+   auditório, e aparece o filtro Todos / Master / Executivo.
+--------------------------------------------------------------------------- */
+
+.prog-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+/* Abas por dia */
+.prog-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.prog-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 13px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(242, 242, 247, 0.78);
+  font: 700 14px/1.2 var(--font-figtree);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+.prog-tab[aria-selected='true'] {
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  border-color: transparent;
+  color: #fff;
+}
+.prog-tab-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.prog-today-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34a853;
+  box-shadow: 0 0 10px #34a853;
+}
+.prog-tab[aria-selected='true'] .prog-today-dot {
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+/* Filtro por auditório (só mobile) */
+.prog-filter {
+  display: none;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+.prog-filter button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(242, 242, 247, 0.72);
+  font: 600 13px/1 var(--font-figtree);
+  cursor: pointer;
+}
+.prog-filter button[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f2f2f7;
+}
+
+.prog-tab:focus-visible,
+.prog-filter button:focus-visible,
+.prog-ics:focus-visible,
+.prog [role='tabpanel']:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 3px;
+}
+
+/* Grade */
+.prog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.prog-head,
+.prog-block {
+  display: grid;
+  grid-template-columns: 92px repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.prog-break {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 14px;
+}
+.prog-head {
+  font: 600 12px/1 var(--font-ibm);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8ab4f8;
+}
+.prog-head > span + span {
+  padding-left: 22px;
+}
+
+/* Horário */
+.prog-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  padding-top: 22px;
+}
+.prog-break .prog-time {
+  padding-top: 16px;
+}
+.prog-break--highlight .prog-time {
+  padding-top: 26px;
+}
+.prog-time-start {
+  font: 700 15px/1 var(--font-ibm);
+  color: #8ab4f8;
+}
+.prog-time-end {
+  font: 600 12px/1 var(--font-ibm);
+  color: rgba(242, 242, 247, 0.55);
+}
+
+/* Card de sessão */
+.prog-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+.prog-card--wide {
+  grid-column: span 2;
+}
+.prog-speaker-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.prog-speaker {
+  margin: 0 4px 0 0;
+  font: 700 17px/1.3 var(--font-sora);
+  color: #f2f2f7;
+}
+.prog-title {
+  margin: 0 0 8px;
+  font: 500 15px/1.55 var(--font-figtree);
+  color: rgba(242, 242, 247, 0.72);
+}
+.prog-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font: 600 11px/1 var(--font-ibm);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.prog-speaker-row .prog-pill {
+  align-self: center;
+}
+.prog-ics {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  font: 600 13px/1 var(--font-figtree);
+  color: rgba(242, 242, 247, 0.82);
+  transition: border-color 0.2s, color 0.2s;
+}
+@media (hover: hover) {
+  .prog-ics:hover {
+    border-color: rgba(138, 180, 248, 0.55);
+    color: #8ab4f8;
+  }
+}
+
+/* Coluna vazia quando só um auditório tem sessão */
+.prog-empty {
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+/* Intervalos e coffee breaks */
+.prog-break-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding: 14px 22px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.prog-break-label {
+  font: 600 15px/1.4 var(--font-figtree);
+  color: rgba(242, 242, 247, 0.72);
+}
+.prog-break-room {
+  font: 600 12px/1.3 var(--font-ibm);
+  color: rgba(242, 242, 247, 0.55);
+}
+
+/* Code in the Dark: borda nas 4 cores Google */
+.prog-break--highlight .prog-break-box {
+  padding: 22px 24px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(#0e0e19, #0e0e19) padding-box,
+    linear-gradient(90deg, #4285f4, #ea4335, #fbbc04, #34a853) border-box;
+}
+.prog-break--highlight .prog-break-label {
+  font: 800 20px/1.25 var(--font-sora);
+  color: #f2f2f7;
+}
+
+/* "Agora": bloco em andamento nos dias do evento */
+[data-live] > .prog-time::after {
+  content: '● Agora';
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(52, 168, 83, 0.16);
+  color: #5bb974;
+  font: 700 10.5px/1 var(--font-ibm);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.prog-block[data-live] .prog-card {
+  border-color: rgba(52, 168, 83, 0.55);
+  background: rgba(52, 168, 83, 0.06);
+  box-shadow: 0 18px 44px -24px rgba(52, 168, 83, 0.7);
+}
+.prog-break[data-live] .prog-break-box {
+  border-color: rgba(52, 168, 83, 0.6);
+}
+.prog-break--highlight[data-live] .prog-break-box {
+  border-color: transparent;
+  box-shadow: 0 0 0 4px rgba(52, 168, 83, 0.18), 0 18px 44px -20px rgba(66, 133, 244, 0.6);
+}
+
+.prog-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 900px) {
+  /* No desktop o auditório vem do cabeçalho da coluna; o selo fica só para leitores de tela. */
+  .prog-room {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@media (max-width: 899px) {
+  .prog-controls {
+    align-items: stretch;
+    margin-bottom: 28px;
+  }
+  /* Abas e filtro viram controles segmentados de largura total */
+  .prog-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .prog-tab {
+    flex-direction: column;
+    gap: 4px;
+    padding: 11px 10px;
+    border-radius: 16px;
+  }
+  .prog-tab-sep {
+    display: none;
+  }
+  .prog-tab-date {
+    font: 600 12px/1 var(--font-ibm);
+    opacity: 0.85;
+  }
+  .prog-filter {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .prog-head,
+  .prog-empty {
+    display: none;
+  }
+  .prog-list {
+    gap: 24px;
+  }
+  .prog-block,
+  .prog-break {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .prog-time,
+  .prog-break .prog-time,
+  .prog-break--highlight .prog-time {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 0;
+  }
+  .prog-card {
+    padding: 18px;
+  }
+  .prog-card--wide {
+    grid-column: auto;
+  }
+  .prog-ics {
+    min-height: 44px;
+  }
+  .prog-break-box {
+    padding: 13px 18px;
+  }
+  .prog-break--highlight .prog-break-box {
+    padding: 20px;
+  }
+  .prog-break--highlight .prog-break-label {
+    font-size: 18px;
+  }
+
+  /* Filtro: esconde cards do outro auditório e horários que ficariam vazios */
+  .prog[data-room-filter='master'] [data-room='executivo'],
+  .prog[data-room-filter='executivo'] [data-room='master'],
+  .prog[data-room-filter='master'] .prog-block[data-rooms='executivo'],
+  .prog[data-room-filter='executivo'] .prog-block[data-rooms='master'] {
+    display: none;
   }
 }

@@ -1,7 +1,7 @@
 # Handoff: DevFest João Pessoa 2026 — Landing Page + Banner
 
 ## Overview
-Site de divulgação e venda de ingressos do **DevFest João Pessoa 2026** (1ª edição), o maior evento de tecnologia da comunidade GDG João Pessoa. Evento nos dias **20 e 21 de novembro de 2026**, no **Uniesp Centro Universitário — João Pessoa, PB**.
+Site de divulgação e venda de ingressos do **DevFest João Pessoa 2026** (1ª edição), o maior evento de tecnologia da comunidade GDG João Pessoa. Evento nos dias **20 e 21 de novembro de 2026**, no **Uniesp Centro Universitário** — Rodovia BR-230, Km 14, s/n, Morada Nova, Cabedelo/PB (Grande João Pessoa).
 
 Este pacote contém:
 1. **Landing page completa** (`DevFest JP Landing.dc.html`) — hero, sobre, trilhas, palestrantes, agenda, patrocinadores, local, FAQ, ingressos, footer.
@@ -17,20 +17,25 @@ A tarefa é **recriar estes designs em um projeto Next.js novo**, usando as conv
 - **next/font** para carregar as fontes Google (Sora, Figtree, IBM Plex Mono)
 - **next/image** para os assets de logo (na pasta `assets/`)
 
-Estrutura sugerida:
+Estrutura atual do projeto:
 ```
 app/
-  layout.tsx            # fontes, metadata, <html lang="pt-BR">
+  layout.tsx            # fontes, metadata, viewport, <html lang="pt-BR">
   page.tsx              # landing (compõe as seções)
+  globals.css           # estilos globais + regras responsivas (breakpoints)
   banner/page.tsx       # banner exportável (opcional)
+  ics/[arquivo]/route.ts # GET /ics/<sessao>.ics — evento de calendário por sessão
 components/
-  Nav.tsx  Hero.tsx  Countdown.tsx  Sobre.tsx  Trilhas.tsx
-  Palestrantes.tsx  Agenda.tsx  Patrocinadores.tsx  Local.tsx
-  Faq.tsx  Ingressos.tsx  Footer.tsx
+  Nav.tsx  NavMenu.tsx  Hero.tsx  Countdown.tsx  Sobre.tsx  Trilhas.tsx
+  Palestrantes.tsx  Programacao.tsx  ProgramacaoClient.tsx  Patrocinadores.tsx
+  Local.tsx  Faq.tsx  Ingressos.tsx  Footer.tsx
   Reveal.tsx            # wrapper de scroll-reveal (IntersectionObserver / Framer)
+data/
+  schedule.ts           # programação oficial (fonte única: seção, .ics e JSON-LD)
 lib/
-  data.ts              # trilhas, palestrantes, sessões, faqs, passes
-public/assets/         # logos (copiar deste bundle)
+  data.ts               # local do evento, trilhas, palestrantes, faqs, ingressos
+  schedule.ts           # derivados da programação (horários ISO, ids, slugs)
+public/assets/          # logos
 ```
 
 ## Fidelity
@@ -74,7 +79,7 @@ Botão primário / CTA: `linear-gradient(90deg,#4285F4,#34A853)`, texto `#fff`, 
 ### Raio / sombra / espaçamento
 - Raio: pills `999px`; cards `14–22px`; chips `999px`.
 - Sombra de destaque: `0 24px 60px -24px rgba(66,133,244,.5)` (card popular) / `0 24px 60px -24px rgba(0,0,0,.8)` (barra flutuante).
-- Largura de conteúdo: máx `1100px` (agenda `1000`, FAQ `820`), padding lateral `40px`. Seções ~`70–110px` de padding vertical. `scroll-margin-top:80px` nas âncoras (por causa da nav sticky).
+- Largura de conteúdo: máx `1100px` (FAQ `820`), padding lateral `40px` (`22px` em telas ≤ 560px). Seções ~`70–110px` de padding vertical. `scroll-margin-top:80px` nas âncoras (por causa da nav sticky).
 
 ---
 
@@ -83,7 +88,8 @@ Botão primário / CTA: `linear-gradient(90deg,#4285F4,#34A853)`, texto `#fff`, 
 ### 1. Nav (sticky, topo)
 - `position:sticky; top:0; z-index:60`, `background:rgba(8,8,15,.72)`, `backdrop-filter:blur(16px)`, borda inferior `1px rgba(255,255,255,.07)`. Padding `15px 40px`, space-between.
 - **Esquerda:** logo `gdg-jp-logo-white.png` (h 28px) · divisória vertical 1px · logo `devfest-brackets-w3.png` (h 26px).
-- **Direita:** links (Figtree 600 13.5px, `rgba(242,242,247,.72)`, hover `#8ab4f8`): Trilhas, Palestrantes, Agenda, Local, FAQ + botão **Ingressos** (pill, gradiente azul→verde).
+- **Direita:** links (Figtree 600 13.5px, `rgba(242,242,247,.72)`, hover `#8ab4f8`): Trilhas, Palestrantes, Programação, Local, FAQ + botão **Ingressos** (pill, gradiente azul→verde).
+- **Mobile (≤ 900px):** os links viram um menu hambúrguer (`NavMenu.tsx`); o botão **Ingressos** continua visível. Em ≤ 480px o logo DevFest sai da nav para caber tudo.
 
 ### 2. Hero
 - `padding:110px 40px 150px`, `overflow:hidden`, centralizado (`max-width:1000px`).
@@ -102,7 +108,7 @@ Botão primário / CTA: `linear-gradient(90deg,#4285F4,#34A853)`, texto `#fff`, 
 Faixa full-width com borda em cima/baixo; texto Sora 700 22px `rgba(...,.28)` rolando (`@keyframes marq` translateX 0→-50%, 28s linear infinite). Itens: IA & Machine Learning ◆ Web Moderna ◆ Mobile ◆ Cloud & DevOps ◆ Comunidade (◆ alternando cores GDG). Duplicar o conteúdo p/ loop contínuo.
 
 ### 4. Sobre + Stats
-Grid 2 colunas. Esquerda: eyebrow `// Sobre o evento`, H2 "Onde a comunidade / vira movimento.", 2 parágrafos. Direita: 4 stat cards (grid 2×2): **40+** Palestras & workshops (azul), **1.200** Participantes (verde), **04** Trilhas (amarelo), **02** Dias (vermelho). Número Sora 800 44px na cor da stat.
+Grid 2 colunas. Esquerda: eyebrow `// Sobre o evento`, H2 "Onde a comunidade / vira movimento.", 2 parágrafos. Direita: 4 stat cards (grid 2×2): **25+** Palestras & workshops (azul), **600** Participantes esperados (verde), **04** Trilhas (amarelo), **02** Dias (vermelho). Número Sora 800 44px na cor da stat.
 
 ### 5. Trilhas (`#trilhas`)
 Header com eyebrow + H2 "Quatro trilhas, um só destino." + parágrafo à direita. Grid 2×2 de cards, um por cor GDG. Cada card: fundo `rgba(cor,.07)`, borda `rgba(cor,.25)`, blob radial no canto sup-dir, número mono (`01`–`04`), H3 Sora 800 28px, descrição.
@@ -114,35 +120,39 @@ Header com eyebrow + H2 "Quatro trilhas, um só destino." + parágrafo à direit
 ### 6. Palestrantes (`#palestrantes`)
 Header centralizado ("Quem sobe ao palco"). Grid 4 colunas × 8 cards. Card: quadrado placeholder listrado com `[ foto ]` e uma barra colorida (cor GDG rotativa) no canto sup-esq; nome (Sora 700 17px) + função (mono/figtree). Todos "A definir" no momento. Link abaixo: "Quer palestrar? Envie sua proposta →".
 
-### 7. Agenda (`#agenda`) — interativa
-Header "Dois dias, uma jornada". **Tabs:** "Dia 1 · 20 Nov" / "Dia 2 · 21 Nov" (pill; ativo = gradiente azul→verde, inativo = outline). Lista de sessões do dia selecionado; cada linha: grid `120px 1fr auto` — horário (mono 15px azul) · título (Sora 700 18px) + palestrante · chip da trilha (cor/fundo conforme trilha). Dados em *State Management*.
+### 7. Programação (`#programacao`) — interativa
+Header "Dois dias, uma jornada". Dados em `data/schedule.ts` (sessões de 40 min em dois auditórios simultâneos, Master e Executivo).
+- **Abas por dia:** "Sexta-feira · 20/11" / "Sábado · 21/11" (ativo = gradiente azul→verde). A aba ativa vai para a URL (`?dia=sexta` / `?dia=sabado`); nos dias do evento abre no dia atual.
+- **Desktop (≥ 900px):** coluna de horário + duas colunas (Auditório Master | Auditório Executivo). Horário com uma só sessão: a outra célula fica com borda tracejada vazia.
+- **Mobile:** lista por horário, cada sessão em card com selo do auditório, e filtro Todos / Master / Executivo.
+- **Card:** palestrante(s) em destaque, título completo, selo "Workshop" quando for o caso e botão **"Adicionar à agenda"** (baixa `/ics/<sessao>.ics`). Os selos de palestrante (GDE, Googler, Convidada/o) existem no tipo, mas hoje nenhum é exibido.
+- **Intervalos / coffee breaks:** linha tracejada de largura total. **Code in the Dark + Happy Hour** (sábado, 17:00): borda nas 4 cores Google.
+- **"Agora":** nos dias do evento (fuso America/Recife) o bloco em andamento ganha destaque verde e selo "Agora", e a página rola até ele ao abrir a aba.
+- JSON-LD `Event` com um `subEvent` por sessão.
 
 ### 8. Patrocinadores (`#patrocinadores`)
 3 cotas: **Diamante** (2 slots grandes, h110), **Ouro** (3 slots, h90, label amarelo), **Prata & Apoio** (4 slots, h72). Slots = placeholder `[ logo ]`. Botão "Seja um patrocinador →".
 
 ### 9. Local (`#local`)
-Grid 2 colunas. Esquerda: eyebrow, H2 "Uniesp Centro / Universitário", parágrafo, 3 linhas com ícone (📍 endereço, 🚗 estacionamento, 🏨 hotéis parceiros). Direita: placeholder de mapa (listrado, h340) → substituir por embed do Google Maps.
+Grid 2 colunas (empilha em ≤ 900px). Esquerda: eyebrow, H2 "Uniesp Centro / Universitário", parágrafo, 2 linhas com ícone (📍 endereço: Rodovia BR-230, Km 14, s/n · Morada Nova, Cabedelo – PB; 🚗 estacionamento no local). Direita: embed do Google Maps (h340; 280 no mobile). O endereço vem de `VENUE` em `lib/data.ts`.
 
 ### 10. FAQ (`#faq`) — accordion
 Header "Perguntas frequentes". 5 itens; um aberto por vez (o 1º começa aberto). Botão full-width com pergunta (Sora 700 17px) + "+" que gira 45° quando aberto; resposta some/aparece. Conteúdo:
-1. **Onde e quando acontece o DevFest?** — "Nos dias 20 e 21 de novembro de 2026, no Uniesp Centro Universitário, em João Pessoa - PB."
+1. **Onde e quando acontece o DevFest?** — "Nos dias 20 e 21 de novembro de 2026, no Uniesp Centro Universitário (Rodovia BR-230, Km 14, s/n · Morada Nova, Cabedelo – PB), na Grande João Pessoa."
 2. **O ingresso dá acesso aos dois dias?** — "Sim. Todos os ingressos garantem acesso à programação completa dos dois dias, incluindo todas as trilhas."
 3. **Vou receber certificado?** — "Sim, todos os participantes recebem certificado digital de participação após o evento."
 4. **Preciso saber programar para participar?** — "Não! O DevFest tem conteúdo do iniciante ao avançado. É um evento para toda a comunidade de tecnologia."
 5. **Como faço para palestrar ou patrocinar?** — "Abrimos chamadas para palestrantes (call for papers) e cotas de patrocínio. Entre em contato pelos canais da comunidade GDG João Pessoa."
 
 ### 11. Ingressos (`#ingressos`)
-Header "Garanta seu lugar" + parágrafo + **selo "Lote atual: 1º lote · aberto"** (pill verde com dot). Grid 3 colunas, card do meio destacado (gradiente azul/verde translúcido, borda azul, badge **"MAIS POPULAR"**). Cada card: nome (mono uppercase), subtítulo (cor de acento), preço (Sora 800 42px), linha de lote, descrição, hairline, lista de benefícios (`✓`), botão.
+Header "Garanta seu lugar" + parágrafo ("Estamos no lote final: as vendas vão até 21/11 às 17:30.") + **selo "Lote atual: lote final · aberto"** (pill verde com dot). Grid 2 colunas centralizado (máx 820px; empilha em ≤ 900px). Cada card: nome (mono uppercase), subtítulo (cor de acento), preço (Sora 800 42px), linha de lote (com a taxa da plataforma), descrição, hairline, lista de benefícios (`✓`), botão. Lote final, ambos só presencial (o Remote Pass não está mais à venda):
 
-- **Remote Pass** — *De onde você estiver* — **R$ 79,99** · 1º lote · online
-  Desc: "Acompanhe as trilhas principais ao vivo, tenha acesso às gravações e materiais pra consultar quando quiser e receba seu certificado. Ideal pra quem não pode estar presente, mas não quer ficar de fora."
-  ✓ Trilhas principais ao vivo · ✓ Gravações e materiais · ✓ Certificado de participação · Botão outline "Comprar".
-- **Dev Pass** *(MAIS POPULAR)* — *A experiência completa, presencial* — **R$ 99,99** · 1º lote · presencial
+- **Dev Pass** *(MAIS POPULAR)* — *A experiência completa, presencial* — **R$ 160,00** + taxa de R$ 16,00 · lote final
   Desc: "Viva o DevFest do jeito que ele foi feito pra ser vivido. Acesso a todas as trilhas, codelabs, arenas práticas e a todo o networking do evento, além de um kit de boas-vindas exclusivo com brindes e swags feitos especialmente pra essa edição."
-  ✓ Tudo do Remote Pass · ✓ Acesso presencial a todas as trilhas · ✓ Kit de boas-vindas · Botão gradiente "Comprar agora →".
-- **Root Pass** — *Acesso de superusuário* (acento amarelo) — **R$ 219,99** · 1º lote · vagas limitadas
+  ✓ Acesso presencial a todas as trilhas · ✓ Kit de boas-vindas · ✓ Certificado de participação · Botão gradiente "Comprar agora →".
+- **Root Pass** *(PREMIUM)* — *Acesso de superusuário* (acento amarelo) — **R$ 279,99** + taxa de R$ 28,00 · lote final
   Desc: "Pra quem quer aproveitar o evento sem nenhum gargalo de permissão. Tudo do Dev Pass mais entrada na área root: um ambiente exclusivo com buffet o dia todo durante os dois dias, onde circulam palestrantes e empresas patrocinadoras, feito pra um networking mais próximo e qualificado."
-  ✓ Tudo do Dev Pass · ✓ Área root com buffet exclusivo o dia todo, durante os dois dias · ✓ Kit de boas-vindas diferenciado com itens exclusivos · ✓ Lugares reservados na plateia do palco principal · ✓ Massoterapia exclusiva dentro da área root · ✓ Acesso à área root para networking diferenciado · ✓ Credenciamento exclusivo para a área root · Botão outline amarelo "Comprar".
+  ✓ Tudo do Dev Pass · ✓ Área root com buffet exclusivo o dia todo, durante os dois dias · ✓ Kit de boas-vindas diferenciado com itens exclusivos · ✓ Lugares reservados na plateia do palco principal · ✓ Massoterapia exclusiva dentro da área root · ✓ Acesso à área root para networking diferenciado · ✓ Credenciamento exclusivo para a área root · Botão amarelo "Comprar agora →".
 
 ### 12. Footer
 Borda superior. Logo `gdg-jp-logo-white.png` + descrição. Duas colunas de links (Evento / Comunidade). Barra inferior mono: "© 2026 GDG João Pessoa" · "20 & 21 Nov · Uniesp · João Pessoa".
@@ -164,7 +174,7 @@ Peça fixa `1280×575` (exportável). Fundo `radial-gradient(120% 130% at 50% 0%
 ## Interactions & Behavior
 - **Scroll reveal:** cada seção (`[data-reveal]`) entra com `opacity 0→1` + `translateY(28px)→0`, transição `.7s cubic-bezier(.2,.7,.2,1)`, disparada por IntersectionObserver (threshold 0.12), uma vez. Implementar com Framer Motion `whileInView` ou um hook `useInView`.
 - **Countdown:** alvo `2026-11-20T09:00:00-03:00`. Atualiza a cada 1s (`setInterval` num `useEffect`, limpar no unmount). Exibe d/h/m/s com zero-pad (2 dígitos). Se passar, zera.
-- **Agenda tabs:** estado `day (1|2)`, troca a lista de sessões; botão ativo com gradiente.
+- **Programação:** abas por dia (WAI-ARIA tabs, setas/Home/End), dia ativo na URL (`?dia=`), filtro por auditório no mobile e destaque "Agora" ao vivo — ver seção 7. Renderização no servidor; só abas, filtro e "agora" são Client Components (`ProgramacaoClient.tsx`).
 - **FAQ:** estado `openFaq (index | -1)`, só um aberto; clicar no aberto fecha; ícone "+" gira 45°.
 - **Marquee:** loop CSS infinito (conteúdo duplicado). `prefers-reduced-motion` deve pausar marquee e blobs.
 - **Nav/âncoras:** scroll suave; `scroll-margin-top:80px`.
@@ -172,15 +182,22 @@ Peça fixa `1280×575` (exportável). Fundo `radial-gradient(120% 130% at 50% 0%
 - **Blobs `floaty`:** `@keyframes floaty { 0%,100%{translateY(0)} 50%{translateY(-16px)} }`, durações 9/11/13s.
 
 ## State Management
-Client components onde há interação (`Hero/Countdown`, `Agenda`, `Faq`). Dados estáticos em `lib/data.ts`:
-- `speakers`: 8 × `{ name:'A definir', role, color }` (cores rotacionam azul/verde/amarelo/vermelho).
-- `tracks`: mapa `IA|Web|Mobile|Cloud|Geral` → `{ colorText, bg }`.
-- `sessions`: `{ 1:[...], 2:[...] }`, cada sessão `{ time, title, speaker, track }`.
-  - **Dia 1:** 09:00 Credenciamento & Welcome Coffee (Geral) · 10:00 Keynote de abertura: o futuro da IA (IA) · 11:30 Construindo apps modernos na web (Web) · 14:00 Android além do básico (Mobile) · 16:00 Escalando com Google Cloud (Cloud).
-  - **Dia 2:** 09:30 Agentes de IA na prática (IA) · 11:00 Performance web em produção (Web) · 14:00 Flutter & Kotlin Multiplatform (Mobile) · 15:30 DevOps sem dor de cabeça (Cloud) · 17:00 Encerramento, sorteios & networking (Geral).
-- `faqs`: array `{ q, a }` (texto acima).
-- `passes`: array com os 3 ingressos (nome, tagline, preço, lote, descrição, features[], destaque?, accentColor).
-- Botões "Comprar" → integrar depois com plataforma de ingressos (ex.: Sympla) via `href`.
+Client components onde há interação (`Hero/Countdown`, `ProgramacaoClient`, `NavMenu`, `Faq`). Dados estáticos:
+- `data/schedule.ts` → `schedule`: programação oficial dos dois dias (`ScheduleDay[]`). Única fonte da seção Programação, dos `.ics` e do JSON-LD.
+- `lib/data.ts`:
+  - `VENUE` / `VENUE_ADDRESS`: nome e endereço do local (usados no Local, FAQ, `.ics` e JSON-LD).
+  - `speakers`: 8 × `{ name:'A definir', role, color }` (cores rotacionam azul/verde/amarelo/vermelho).
+  - `tracks`: as 4 trilhas `{ n, title, desc, color, text }`.
+  - `faqs`: array `{ q, a }` (texto acima).
+  - `passes`: os 2 ingressos do lote final (nome, tagline, preço, lote, descrição, features[], featured?/premium?, accent).
+- Botões "Comprar" → plataforma de ingressos (`TICKETS_URL`, Doity).
+
+## Responsividade
+Desktop-first, com regras em `app/globals.css`:
+- **≤ 900px:** grids de 2–3 colunas empilham (Sobre, Trilhas, Local, Ingressos), a barra do hero vira card, a nav troca os links pelo menu hambúrguer, a Programação vira lista com filtro.
+- **≤ 560px:** padding lateral `22px` em seções, hero, nav e footer; H2 `32px`; o H1 (fluido via `clamp(40px, 7.5vw, 84px)`) perde as quebras de linha fixas.
+- **≤ 480px:** nav mostra só o logo GDG + Ingressos + menu.
+- O wrapper `.page` usa `overflow-x: clip` (não `hidden`) para recortar os blobs sem quebrar a nav `position: sticky`.
 
 ## Assets
 Na pasta `assets/` deste bundle (mover para `public/assets/`). Todos PNG com **fundo transparente**, texto branco + mark GDG colorido — feitos para fundo escuro:
@@ -189,7 +206,7 @@ Na pasta `assets/` deste bundle (mover para `public/assets/`). Todos PNG com **f
 - `devfest-2026-w3.png` — logo "DevFest 2026" com mark + pill 2026 (hero).
 - `gdg-jp-clean.png` — lockup GDG JP em alta (banner, canto).
 - `devfest-clean.png` — wordmark "DevFest" em alta com mark (banner, centro).
-Placeholders a substituir por assets reais: fotos dos palestrantes, embed do Google Maps do Uniesp, logos dos patrocinadores. Ícones de local/barra são emoji (📅📍🚗🏨) — trocar por biblioteca de ícones (ex.: lucide-react) se preferir.
+Placeholders a substituir por assets reais: fotos dos palestrantes, logos dos patrocinadores. Ícones de local/barra são emoji (📅📍🚗) — trocar por biblioteca de ícones (ex.: lucide-react) se preferir.
 
 ## Files (referências neste bundle)
 - `DevFest JP Landing.dc.html` — landing completa.

@@ -1,7 +1,7 @@
 import Reveal from './Reveal';
 
 const stats = [
-  { value: '40+', label: 'Palestras & workshops', color: '#4285F4' },
+  { value: '25+', label: 'Palestras & workshops', color: '#4285F4' },
   { value: '600', label: 'Participantes esperados', color: '#34A853' },
   { value: '04', label: 'Trilhas técnicas', color: '#FBBC04' },
   { value: '02', label: 'Dias de imersão', color: '#EA4335' },

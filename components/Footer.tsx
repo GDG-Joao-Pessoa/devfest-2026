@@ -7,7 +7,7 @@ const columns = [
     links: [
       { href: '#trilhas', label: 'Trilhas' },
       { href: '#palestrantes', label: 'Palestrantes' },
-      { href: '#agenda', label: 'Agenda' },
+      { href: '#programacao', label: 'Programação' },
       { href: '#ingressos', label: 'Ingressos' },
     ],
   },
@@ -65,13 +65,14 @@ export default function Footer() {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 11,
+                  gap: 1,
                   fontSize: 14,
                   color: 'rgba(242,242,247,.72)',
                 }}
               >
+                {/* padding vertical: alvo de toque maior sem mudar o ritmo visual */}
                 {col.links.map((l, i) => (
-                  <a key={i} href={l.href}>
+                  <a key={i} href={l.href} style={{ padding: '5px 0' }}>
                     {l.label}
                   </a>
                 ))}

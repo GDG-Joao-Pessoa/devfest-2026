@@ -14,6 +14,27 @@ export const EVENT = {
   targetDate: '2026-11-20T09:00:00-03:00',
 } as const;
 
+/** URL pública do site (mesma do `metadataBase` em app/layout.tsx). */
+export const SITE_URL = 'https://devfest-jp.dev';
+
+/**
+ * Local do evento. Endereço oficial do campus sede (documentos institucionais
+ * da Uniesp): Rodovia BR-230, Km 14, s/n, Morada Nova, Cabedelo/PB — na Grande
+ * João Pessoa.
+ */
+export const VENUE = {
+  name: 'Uniesp Centro Universitário',
+  street: 'Rodovia BR-230, Km 14, s/n',
+  district: 'Morada Nova',
+  city: 'Cabedelo',
+  region: 'PB',
+  postalCode: '58310-000',
+  country: 'BR',
+} as const;
+
+/** "Rodovia BR-230, Km 14, s/n · Morada Nova, Cabedelo – PB" */
+export const VENUE_ADDRESS = `${VENUE.street} · ${VENUE.district}, ${VENUE.city} – ${VENUE.region}`;
+
 /** Plataforma de venda de ingressos. */
 export const TICKETS_URL = 'https://doity.com.br/devfest-joao-pessoa';
 
@@ -76,43 +97,6 @@ export const tracks: Track[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Agenda
-// ---------------------------------------------------------------------------
-export type TrackKey = 'IA' | 'Web' | 'Mobile' | 'Cloud' | 'Geral';
-
-export const trackStyle: Record<TrackKey, { color: string; bg: string }> = {
-  IA: { color: '#8ab4f8', bg: 'rgba(66,133,244,.14)' },
-  Web: { color: '#5bb974', bg: 'rgba(52,168,83,.14)' },
-  Mobile: { color: '#fcc934', bg: 'rgba(251,188,4,.14)' },
-  Cloud: { color: '#ee675c', bg: 'rgba(234,67,53,.14)' },
-  Geral: { color: 'rgba(242,242,247,.7)', bg: 'rgba(255,255,255,.07)' },
-};
-
-export type Session = {
-  time: string;
-  title: string;
-  speaker: string;
-  track: TrackKey;
-};
-
-export const sessions: Record<1 | 2, Session[]> = {
-  1: [
-    { time: '09:00', title: 'Credenciamento & Welcome Coffee', speaker: 'Equipe GDG João Pessoa', track: 'Geral' },
-    { time: '10:00', title: 'Keynote de abertura: o futuro da IA', speaker: 'Palestrante a definir', track: 'IA' },
-    { time: '11:30', title: 'Construindo apps modernos na web', speaker: 'Palestrante a definir', track: 'Web' },
-    { time: '14:00', title: 'Android além do básico', speaker: 'Palestrante a definir', track: 'Mobile' },
-    { time: '16:00', title: 'Escalando com Google Cloud', speaker: 'Palestrante a definir', track: 'Cloud' },
-  ],
-  2: [
-    { time: '09:30', title: 'Agentes de IA na prática', speaker: 'Palestrante a definir', track: 'IA' },
-    { time: '11:00', title: 'Performance web em produção', speaker: 'Palestrante a definir', track: 'Web' },
-    { time: '14:00', title: 'Flutter & Kotlin Multiplatform', speaker: 'Palestrante a definir', track: 'Mobile' },
-    { time: '15:30', title: 'DevOps sem dor de cabeça', speaker: 'Palestrante a definir', track: 'Cloud' },
-    { time: '17:00', title: 'Encerramento, sorteios & networking', speaker: 'Equipe GDG João Pessoa', track: 'Geral' },
-  ],
-};
-
-// ---------------------------------------------------------------------------
 // FAQ
 // ---------------------------------------------------------------------------
 export type Faq = { q: string; a: string };
@@ -120,7 +104,7 @@ export type Faq = { q: string; a: string };
 export const faqs: Faq[] = [
   {
     q: 'Onde e quando acontece o DevFest?',
-    a: 'Nos dias 20 e 21 de novembro de 2026, no Uniesp Centro Universitário, em João Pessoa - PB.',
+    a: `Nos dias 20 e 21 de novembro de 2026, no ${VENUE.name} (${VENUE_ADDRESS}), na Grande João Pessoa.`,
   },
   {
     q: 'O ingresso dá acesso aos dois dias?',
@@ -158,24 +142,15 @@ export type Pass = {
   href: string;
 };
 
+// Lote final (preços da plataforma de ingressos; taxa cobrada à parte).
 export const passes: Pass[] = [
-  {
-    name: 'Remote Pass',
-    tagline: 'De onde você estiver',
-    price: 'R$ 79,99',
-    lote: '1º lote · online',
-    desc: 'Acompanhe as trilhas principais ao vivo, tenha acesso às gravações e materiais pra consultar quando quiser e receba seu certificado. Ideal pra quem não pode estar presente, mas não quer ficar de fora.',
-    features: ['Trilhas principais ao vivo', 'Gravações e materiais', 'Certificado de participação'],
-    cta: 'Comprar',
-    href: TICKETS_URL,
-  },
   {
     name: 'Dev Pass',
     tagline: 'A experiência completa, presencial',
-    price: 'R$ 99,99',
-    lote: '1º lote · presencial',
+    price: 'R$ 160,00',
+    lote: 'Lote final · presencial · + taxa de R$ 16,00',
     desc: 'Viva o DevFest do jeito que ele foi feito pra ser vivido. Acesso a todas as trilhas, codelabs, arenas práticas e a todo o networking do evento, além de um kit de boas-vindas exclusivo com brindes e swags feitos especialmente pra essa edição.',
-    features: ['Tudo do Remote Pass', 'Acesso presencial a todas as trilhas', 'Kit de boas-vindas'],
+    features: ['Acesso presencial a todas as trilhas', 'Kit de boas-vindas', 'Certificado de participação'],
     featured: true,
     badge: 'MAIS POPULAR',
     accent: GDG.blueText,
@@ -185,8 +160,8 @@ export const passes: Pass[] = [
   {
     name: 'Root Pass',
     tagline: 'Acesso de superusuário',
-    price: 'R$ 219,99',
-    lote: '1º lote · vagas limitadas',
+    price: 'R$ 279,99',
+    lote: 'Lote final · presencial · + taxa de R$ 28,00',
     desc: 'Pra quem quer aproveitar o evento sem nenhum gargalo de permissão. Tudo do Dev Pass mais entrada na área root: um ambiente exclusivo com buffet o dia todo durante os dois dias, onde circulam palestrantes e empresas patrocinadoras, feito pra um networking mais próximo e qualificado.',
     features: [
       'Tudo do Dev Pass',

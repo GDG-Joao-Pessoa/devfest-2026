@@ -16,7 +16,13 @@ const gradientText: React.CSSProperties = {
 
 export default function Hero() {
   return (
-    <header style={{ position: 'relative', padding: '110px 40px 150px', overflow: 'hidden' }}>
+    <header
+      style={{
+        position: 'relative',
+        padding: 'clamp(64px, 14vw, 110px) 40px clamp(80px, 18vw, 150px)',
+        overflow: 'hidden',
+      }}
+    >
       {/* animated radial blobs */}
       <div
         className="floaty"
@@ -104,6 +110,7 @@ export default function Hero() {
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 30 }}>
           <div
+            className="hero-pill"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -111,8 +118,6 @@ export default function Hero() {
               padding: '9px 20px',
               border: '1px solid rgba(255,255,255,.16)',
               borderRadius: 999,
-              font: '600 12px/1 var(--font-ibm)',
-              letterSpacing: 2,
               textTransform: 'uppercase',
               color: 'rgba(242,242,247,.88)',
             }}
@@ -121,19 +126,29 @@ export default function Hero() {
               style={{
                 width: 7,
                 height: 7,
+                flexShrink: 0,
                 borderRadius: '50%',
                 background: '#34A853',
                 boxShadow: '0 0 10px #34A853',
               }}
             />
-            João Pessoa · 1ª Edição · Inscrições abertas
+            <span>
+              {/* No celular o wordmark logo acima já diz "João Pessoa". */}
+              <span className="hero-pill-city">João Pessoa · </span>1ª Edição · Inscrições abertas
+            </span>
           </div>
         </div>
-        <h1 style={{ margin: 0, font: '800 84px/.98 var(--font-sora)', letterSpacing: '-2.5px' }}>
-          A comunidade de
-          <br />
-          tecnologia e inovação
-          <br />
+        <h1
+          className="hero-title"
+          style={{
+            margin: 0,
+            font: '800 clamp(40px, 7.5vw, 84px)/.98 var(--font-sora)',
+            letterSpacing: '-0.03em',
+          }}
+        >
+          {/* As quebras só valem em telas largas; no celular o texto flui (ver .hero-br). */}
+          A comunidade de <br className="hero-br" />
+          tecnologia e inovação <br className="hero-br" />
           <span style={gradientText}>se encontra aqui.</span>
         </h1>
         <p
@@ -237,6 +252,7 @@ export default function Hero() {
             href={TICKETS_URL}
             target="_blank"
             rel="noopener noreferrer"
+            className="hero-bar-cta"
             style={{
               padding: '15px 28px',
               borderRadius: 999,

@@ -32,7 +32,7 @@ export default function Ingressos() {
             color: 'rgba(242,242,247,.6)',
           }}
         >
-          Lotes limitados. Quanto antes, melhor o preço.
+          Estamos no lote final: as vendas vão até 21/11 às 17:30.
         </p>
         <div
           style={{
@@ -58,11 +58,21 @@ export default function Ingressos() {
               boxShadow: '0 0 10px #34A853',
             }}
           />
-          Lote atual: 1º lote · aberto
+          Lote atual: lote final · aberto
         </div>
       </div>
 
-      <div className="ingressos-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, alignItems: 'stretch' }}>
+      <div
+        className="ingressos-grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${passes.length},1fr)`,
+          gap: 20,
+          alignItems: 'stretch',
+          maxWidth: 820,
+          margin: '0 auto',
+        }}
+      >
         {passes.map((p) => {
           const highlighted = p.featured || p.premium;
           const nameColor = p.accent ?? 'rgba(242,242,247,.6)';

@@ -4,7 +4,7 @@ import Marquee from '@/components/Marquee';
 import Sobre from '@/components/Sobre';
 import Trilhas from '@/components/Trilhas';
 import Palestrantes from '@/components/Palestrantes';
-import Agenda from '@/components/Agenda';
+import Programacao from '@/components/Programacao';
 import Patrocinadores from '@/components/Patrocinadores';
 import Local from '@/components/Local';
 import Faq from '@/components/Faq';
@@ -13,15 +13,16 @@ import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
-    <div id="top" style={{ overflowX: 'hidden', position: 'relative' }}>
+    // .page recorta o overflow horizontal sem virar scroll container (ver globals.css),
+    // o que mantém a nav `position: sticky` funcionando.
+    <div id="top" className="page">
       <Nav />
       <Hero />
       <Marquee />
       <Sobre />
-      <Trilhas />
       {/* <Palestrantes /> */}
-      {/* <Agenda />
-      <Patrocinadores /> */}
+      <Programacao />
+      {/* <Patrocinadores /> */}
       <Ingressos />
       <Local />
       <Faq />
