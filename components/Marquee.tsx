@@ -6,16 +6,45 @@ const items = [
   { label: 'Comunidade', dot: '#4285F4' },
 ];
 
-function Row() {
+const GAP = 44;
+
+/**
+ * Quantas vezes a lista se repete em cada metade da faixa. Cada metade precisa
+ * ser mais larga que a tela; com uma lista só (~1.340px) sobrava espaço vazio
+ * no fim do ciclo em telas largas. 3× cobre monitores de até ~4.000px.
+ */
+const REPEAT = 3;
+
+/** Segundos para rolar uma lista inteira (velocidade original da faixa). */
+const SECONDS_PER_LIST = 28;
+
+/**
+ * Metade da faixa. O espaçamento final vai como padding (e não como `gap`
+ * entre as metades) para que -50% do track seja exatamente uma metade e o
+ * loop não dê "pulo".
+ */
+function Half({ decorative }: { decorative?: boolean }) {
   return (
-    <>
-      {items.map((it, i) => (
-        <span key={i} style={{ display: 'inline-flex', gap: 44, alignItems: 'center' }}>
-          <span>{it.label}</span>
-          <span style={{ color: it.dot }}>◆</span>
-        </span>
-      ))}
-    </>
+    <div
+      aria-hidden={decorative || undefined}
+      style={{ display: 'flex', alignItems: 'center', gap: GAP, paddingRight: GAP, flexShrink: 0 }}
+    >
+      {Array.from({ length: REPEAT }, (_, r) =>
+        items.map((it, i) => (
+          <span
+            key={`${r}-${i}`}
+            // leitores de tela ouvem a lista uma vez só
+            aria-hidden={r > 0 || undefined}
+            style={{ display: 'inline-flex', gap: GAP, alignItems: 'center' }}
+          >
+            <span>{it.label}</span>
+            <span style={{ color: it.dot }} aria-hidden="true">
+              ◆
+            </span>
+          </span>
+        )),
+      )}
+    </div>
   );
 }
 
@@ -33,16 +62,15 @@ export default function Marquee() {
       <div
         className="marquee-track"
         style={{
-          display: 'inline-flex',
-          gap: 44,
-          alignItems: 'center',
-          animation: 'marq 28s linear infinite',
+          display: 'flex',
+          width: 'max-content',
+          animation: `marq ${SECONDS_PER_LIST * REPEAT}s linear infinite`,
           font: '700 22px var(--font-sora)',
           color: 'rgba(242,242,247,.28)',
         }}
       >
-        <Row />
-        <Row />
+        <Half />
+        <Half decorative />
       </div>
     </div>
   );
