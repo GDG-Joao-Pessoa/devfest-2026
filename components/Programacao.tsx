@@ -14,6 +14,7 @@ import {
   sessionId,
 } from '@/lib/schedule';
 import { GDG, SITE_URL, VENUE } from '@/lib/data';
+import { speakerAnchor, speakerIdForTalk } from '@/lib/speakers';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -193,6 +194,8 @@ function SessionCard({
   wide?: boolean;
 }) {
   const id = sessionId(day, time, session.room);
+  const speakerId = speakerIdForTalk(session.title);
+  const speakerNames = formatSpeakers(session.speakers);
 
   return (
     <article
@@ -204,7 +207,20 @@ function SessionCard({
         {session.room}
       </span>
       <div className="prog-speaker-row">
-        <p className="prog-speaker">{formatSpeakers(session.speakers)}</p>
+        <p className="prog-speaker">
+          {speakerId ? (
+            // Link "esticado" (::after cobre o card): abre o modal do palestrante.
+            <a
+              href={`#${speakerAnchor(speakerId)}`}
+              className="prog-speaker-link"
+              aria-haspopup="dialog"
+            >
+              {speakerNames}
+            </a>
+          ) : (
+            speakerNames
+          )}
+        </p>
         {session.badge && (
           <span
             className="prog-pill"

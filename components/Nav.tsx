@@ -4,7 +4,6 @@ import devfestBrackets from '@/public/assets/devfest-brackets-w3.png';
 import NavMenu, { type NavLink } from './NavMenu';
 
 const links: NavLink[] = [
-  { href: '#trilhas', label: 'Trilhas' },
   { href: '#palestrantes', label: 'Palestrantes' },
   { href: '#programacao', label: 'Programação' },
   { href: '#local', label: 'Local' },
@@ -12,10 +11,17 @@ const links: NavLink[] = [
 ];
 
 // Layout responsivo (padding, tamanho dos logos, menu mobile) em .site-nav no globals.css.
-export default function Nav() {
+export default function Nav({
+  base = '',
+}: {
+  /** prefixo dos links de seção: '' na home, '/' nas outras páginas */
+  base?: string;
+}) {
+  const items = links.map((l) => ({ ...l, href: base + l.href }));
+
   return (
     <nav className="site-nav">
-      <a href="#top" className="nav-brand">
+      <a href={base ? '/' : '#top'} className="nav-brand">
         <Image
           src={gdgLogo}
           alt="GDG João Pessoa"
@@ -33,15 +39,15 @@ export default function Nav() {
         />
       </a>
       <div className="nav-links">
-        {links.map((l) => (
+        {items.map((l) => (
           <a key={l.href} href={l.href} className="nav-link">
             {l.label}
           </a>
         ))}
-        <a href="#ingressos" className="nav-cta">
+        <a href={`${base}#ingressos`} className="nav-cta">
           Ingressos
         </a>
-        <NavMenu links={links} />
+        <NavMenu links={items} />
       </div>
     </nav>
   );

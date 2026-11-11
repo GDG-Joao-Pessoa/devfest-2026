@@ -5,8 +5,7 @@ const columns = [
   {
     title: 'Evento',
     links: [
-      { href: '#trilhas', label: 'Trilhas' },
-      { href: '#palestrantes', label: 'Palestrantes' },
+      { href: '/palestrantes', label: 'Palestrantes' },
       { href: '#programacao', label: 'Programação' },
       { href: '#ingressos', label: 'Ingressos' },
     ],
@@ -22,7 +21,14 @@ const columns = [
   },
 ];
 
-export default function Footer() {
+export default function Footer({
+  base = '',
+}: {
+  /** prefixo dos links de seção (#...): '' na home, '/' nas outras páginas */
+  base?: string;
+}) {
+  const withBase = (href: string) => (href.length > 1 && href.startsWith('#') ? base + href : href);
+
   return (
     <footer style={{ borderTop: '1px solid rgba(255,255,255,.08)', padding: '56px 40px 40px' }}>
       <div
@@ -72,7 +78,7 @@ export default function Footer() {
               >
                 {/* padding vertical: alvo de toque maior sem mudar o ritmo visual */}
                 {col.links.map((l, i) => (
-                  <a key={i} href={l.href} style={{ padding: '5px 0' }}>
+                  <a key={i} href={withBase(l.href)} style={{ padding: '5px 0' }}>
                     {l.label}
                   </a>
                 ))}

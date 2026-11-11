@@ -24,18 +24,26 @@ app/
   page.tsx              # landing (compõe as seções)
   globals.css           # estilos globais + regras responsivas (breakpoints)
   banner/page.tsx       # banner exportável (opcional)
+  palestrantes/page.tsx # /palestrantes — todos os palestrantes
   ics/[arquivo]/route.ts # GET /ics/<sessao>.ics — evento de calendário por sessão
 components/
   Nav.tsx  NavMenu.tsx  Hero.tsx  Countdown.tsx  Sobre.tsx  Trilhas.tsx
-  Palestrantes.tsx  Programacao.tsx  ProgramacaoClient.tsx  Patrocinadores.tsx
+  Palestrantes.tsx      # seção da home (destaques + "Conferir todos")
+  SpeakerCard.tsx  SpeakerDialogs.tsx  SpeakerDialogController.tsx
+  Programacao.tsx  ProgramacaoClient.tsx  Patrocinadores.tsx
   Local.tsx  Faq.tsx  Ingressos.tsx  Footer.tsx
   Reveal.tsx            # wrapper de scroll-reveal (IntersectionObserver / Framer)
 data/
   schedule.ts           # programação oficial (fonte única: seção, .ics e JSON-LD)
+  palestrantes.json     # palestrantes (exportado pela organização)
 lib/
-  data.ts               # local do evento, trilhas, palestrantes, faqs, ingressos
+  data.ts               # local do evento, trilhas, faqs, ingressos
   schedule.ts           # derivados da programação (horários ISO, ids, slugs)
-public/assets/          # logos
+  speakers.ts           # palestrantes ligados à programação pelo título da palestra
+scripts/
+  otimizar-fotos-palestrantes.mjs  # originais → public/assets/speakers/<id>.webp
+assets/palestrantes/    # pacote original (CSV, README; fotos em alta fora do git) — não é servido
+public/assets/          # logos + speakers/<id>.webp (fotos otimizadas)
 ```
 
 ## Fidelity
@@ -88,7 +96,7 @@ Botão primário / CTA: `linear-gradient(90deg,#4285F4,#34A853)`, texto `#fff`, 
 ### 1. Nav (sticky, topo)
 - `position:sticky; top:0; z-index:60`, `background:rgba(8,8,15,.72)`, `backdrop-filter:blur(16px)`, borda inferior `1px rgba(255,255,255,.07)`. Padding `15px 40px`, space-between.
 - **Esquerda:** logo `gdg-jp-logo-white.png` (h 28px) · divisória vertical 1px · logo `devfest-brackets-w3.png` (h 26px).
-- **Direita:** links (Figtree 600 13.5px, `rgba(242,242,247,.72)`, hover `#8ab4f8`): Trilhas, Palestrantes, Programação, Local, FAQ + botão **Ingressos** (pill, gradiente azul→verde).
+- **Direita:** links (Figtree 600 13.5px, `rgba(242,242,247,.72)`, hover `#8ab4f8`): Palestrantes, Programação, Local, FAQ + botão **Ingressos** (pill, gradiente azul→verde).
 - **Mobile (≤ 900px):** os links viram um menu hambúrguer (`NavMenu.tsx`); o botão **Ingressos** continua visível. Em ≤ 480px o logo DevFest sai da nav para caber tudo.
 
 ### 2. Hero
@@ -118,7 +126,13 @@ Header com eyebrow + H2 "Quatro trilhas, um só destino." + parágrafo à direit
 4. **Cloud & DevOps** (vermelho) — "Infra sem atrito: Google Cloud, containers, observabilidade e automação."
 
 ### 6. Palestrantes (`#palestrantes`)
-Header centralizado ("Quem sobe ao palco"). Grid 4 colunas × 8 cards. Card: quadrado placeholder listrado com `[ foto ]` e uma barra colorida (cor GDG rotativa) no canto sup-esq; nome (Sora 700 17px) + função (mono/figtree). Todos "A definir" no momento. Link abaixo: "Quer palestrar? Envie sua proposta →".
+Header centralizado ("Quem sobe ao palco"). Dados em `data/palestrantes.json`; horário e auditório vêm da programação (`data/schedule.ts`), ligados pelo título da palestra. Quem não está na programação não aparece.
+- **Home:** só os destaques (Karol Attekita, Mikaeri Ohana, PokemaoBR — `FEATURED_IDS` em `lib/speakers.ts`), em cards maiores com o título da palestra, + botão **"Conferir todos os palestrantes →"**.
+- **`/palestrantes`:** todos, destaques primeiro e depois em ordem alfabética. Grid 4 → 3 (≤ 900px) → 2 colunas (≤ 560px).
+- **Card:** foto quadrada com barra colorida (cor GDG rotativa), nome, cargo e dia · horário · auditório.
+- **Modal** (`<dialog>` por palestrante, aberto por links `#palestrante-<id>`): foto, cargo, rede social, palestra (horário, resumo, "Adicionar à agenda"), bio e parceria (quando houver). O link pode ser compartilhado e o Voltar do navegador fecha o modal. Os cards da programação também abrem o modal.
+- Selos (GDE, Googler, Convidada/o) não são exibidos.
+- **Fotos:** originais em `assets/palestrantes/fotos/<id>.png` (fora do git, ver `.gitignore`); rode `node scripts/otimizar-fotos-palestrantes.mjs` para gerar `public/assets/speakers/<id>.webp` (640×880).
 
 ### 7. Programação (`#programacao`) — interativa
 Header "Dois dias, uma jornada". Dados em `data/schedule.ts` (sessões de 40 min em dois auditórios simultâneos, Master e Executivo).

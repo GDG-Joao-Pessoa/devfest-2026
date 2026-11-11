@@ -45,3 +45,8 @@ Thumbs.db
 # opennext / cloudflare
 /.open-next/
 .wrangler/
+
+# Fotos originais dos palestrantes (alta resolução, ~34 MB). O site usa as
+# versões otimizadas em public/assets/speakers/, geradas por
+# scripts/otimizar-fotos-palestrantes.mjs.
+/assets/palestrantes/fotos/
