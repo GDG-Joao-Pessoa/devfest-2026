@@ -134,7 +134,7 @@ export const schedule: ScheduleDay[] = [
           },
         ],
       },
-      { time: '15:20', type: 'break', label: 'Coffee Break', room: 'Ambos os auditórios' },
+      { time: '15:20', type: 'break', label: 'Intervalo', room: 'Ambos os auditórios' },
       {
         time: '15:40',
         type: 'sessions',
@@ -327,7 +327,7 @@ export const schedule: ScheduleDay[] = [
         time: '17:00',
         type: 'highlight',
         label: 'Code in the Dark + Happy Hour de encerramento',
-        room: 'Auditório Master',
+        room: 'Auditório Executivo',
       },
     ],
   },
