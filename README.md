@@ -173,6 +173,29 @@ Borda superior. Logo `gdg-jp-logo-white.png` + descrição. Duas colunas de link
 
 ---
 
+## Inscrições (Code in the Dark e Workshop ADK)
+Atividades com vagas limitadas têm inscrição própria, separada do ingresso, gravada no **Supabase**.
+
+- **Páginas:** `/inscricoes/code-in-the-dark` e `/inscricoes/workshop` (`app/inscricoes/[atividade]/page.tsx`). Na home, a seção `#inscricoes` (`components/Inscricoes.tsx`) fica logo depois da Programação, e o bloco do Code in the Dark na programação ganha um botão "Inscreva-se" (`href` em `data/schedule.ts`).
+- **Conteúdo e perguntas:** `lib/inscricoes.ts`, fonte única da página, do formulário e da validação no servidor. Para adicionar uma pergunta, inclua um item em `campos`; a resposta vai para `inscricoes.respostas`.
+- **Envio:** Server Action (`app/inscricoes/actions.ts`) valida os dados, normaliza o WhatsApp (`5583...`), barra robôs com um honeypot e chama a função `inscrever` no Supabase (`lib/supabase.ts`, via REST, sem SDK). Funciona também sem JavaScript.
+- **Vagas e lista de espera:** quando as vagas acabam, a inscrição entra na lista de espera com a posição; se a lista de espera tiver limite e encher, o formulário some e a página mostra "Vagas esgotadas". A função trava a linha da atividade, então inscrições simultâneas não passam do limite. Um e-mail tem uma inscrição por atividade; repetir o envio devolve a inscrição existente.
+- **Configuração atual:** Code in the Dark com 9 vagas + 9 na lista de espera (sábado 21/11, 17:00, Auditório Executivo). Workshop do Arnaldo com 40 vagas e lista de espera sem limite (sexta 20/11, 14:00, Laboratório 11). As inscrições de cada um fecham no horário de início.
+
+### Configurar o Supabase
+1. Rode `supabase/migrations/20261119120000_inscricoes.sql` no projeto (SQL Editor, ou `supabase db push`).
+2. Copie `.env.example` para `.env.local` (dev) e `.dev.vars` (preview do Cloudflare) e preencha `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (publishable ou anon legada, **nunca** a service_role).
+3. Produção: `npx wrangler secret put SUPABASE_URL` e `npx wrangler secret put SUPABASE_PUBLISHABLE_KEY`.
+
+Segurança: as tabelas têm RLS ligado e nenhuma política, então a chave pública só consegue executar `inscrever` e `situacao_atividade` e não lista inscritos.
+
+### Operação (painel do Supabase)
+- **Vagas / abrir / fechar:** tabela `atividades` (`vagas`, `vagas_espera` (vazio = lista de espera sem limite), `inscricoes_abertas`, `encerra_em`). O site lê na hora, sem deploy.
+- **Listas para exportar (CSV):** views `inscricoes_code_in_the_dark` e `inscricoes_workshop_adk`, com as respostas em colunas e a posição na lista de espera.
+- **Liberar uma vaga:** mude a inscrição para `cancelada` e a próxima da lista de espera para `confirmada`, e avise a pessoa pelo WhatsApp.
+
+---
+
 ## Screen — Banner (1280×575)
 Peça fixa `1280×575` (exportável). Fundo `radial-gradient(120% 130% at 50% 0%,#141426,#0a0a14 55%,#08080f)`.
 - **Anéis concêntricos** à direita (4 círculos com borda fina nas cores GDG, baixa opacidade) + 1 espelhado à esquerda (branco .05).
