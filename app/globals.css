@@ -1143,10 +1143,98 @@ html:has(.spk-dialog[open]) {
 }
 
 /* ---------------------------------------------------------------------------
-   Inscrições — /inscricoes/<atividade>
+   Inscrições — components/Inscricoes.tsx (home) e /inscricoes/<atividade>
    (components/InscricaoPagina.tsx + InscricaoForm.tsx).
    Cor da atividade em --insc-cor / --insc-cor-texto (lib/inscricoes.ts).
 --------------------------------------------------------------------------- */
+
+/* Link "Inscreva-se" no bloco do Code in the Dark (Programação) */
+.prog-break-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  color: #fff;
+  font: 700 13px/1 var(--font-figtree);
+  white-space: nowrap;
+}
+.prog-break-link:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .prog-break-link:hover {
+    color: #fff;
+    box-shadow: 0 12px 34px -10px rgba(66, 133, 244, 0.6);
+  }
+}
+
+/* Home */
+.insc-home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.insc-home-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 34px 32px;
+  border: 1px solid color-mix(in srgb, var(--insc-cor) 30%, transparent);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--insc-cor) 26%, transparent), transparent 45%),
+    color-mix(in srgb, var(--insc-cor) 7%, transparent);
+  color: #f2f2f7;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.insc-home-card:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 3px;
+}
+.insc-home-eyebrow {
+  font: 700 12px/1 var(--font-ibm);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--insc-cor-texto);
+}
+.insc-home-titulo {
+  margin: 16px 0 0;
+  font: 800 24px/1.2 var(--font-sora);
+  letter-spacing: -0.5px;
+}
+.insc-home-com {
+  margin-top: 10px;
+  font: 600 14px/1.3 var(--font-figtree);
+  color: var(--insc-cor-texto);
+}
+.insc-home-texto {
+  flex: 1;
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(242, 242, 247, 0.62);
+}
+.insc-home-meta {
+  margin-top: 20px;
+  font: 600 12px/1.3 var(--font-ibm);
+  color: rgba(242, 242, 247, 0.55);
+}
+.insc-home-cta {
+  margin-top: 18px;
+  font: 700 14px/1 var(--font-figtree);
+  color: var(--insc-cor-texto);
+}
+@media (hover: hover) {
+  .insc-home-card:hover {
+    color: #f2f2f7;
+    border-color: color-mix(in srgb, var(--insc-cor) 60%, transparent);
+    transform: translateY(-2px);
+  }
+}
 
 /* Página da atividade */
 .insc {
@@ -1504,6 +1592,7 @@ select.insc-input option {
 }
 
 @media (max-width: 900px) {
+  .insc-home-grid,
   .insc-grid {
     grid-template-columns: 1fr;
   }
@@ -1521,6 +1610,9 @@ select.insc-input option {
   }
   .insc-card {
     padding: 26px 20px;
+  }
+  .insc-home-card {
+    padding: 28px 24px;
   }
   /* A regra geral de h2 (32px) é para títulos de seção, não para os de dentro da página. */
   .insc .insc-card-titulo,

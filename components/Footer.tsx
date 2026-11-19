@@ -7,6 +7,7 @@ const columns = [
     links: [
       { href: '/palestrantes', label: 'Palestrantes' },
       { href: '#programacao', label: 'Programação' },
+      { href: '#inscricoes', label: 'Inscrições' },
       { href: '#ingressos', label: 'Ingressos' },
     ],
   },

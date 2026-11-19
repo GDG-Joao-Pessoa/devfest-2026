@@ -21,7 +21,14 @@ export type Session = {
 
 export type ScheduleItem =
   | { time: string; type: 'sessions'; sessions: Session[] }
-  | { time: string; type: 'break' | 'highlight'; label: string; room: Room | null };
+  | {
+      time: string;
+      type: 'break' | 'highlight';
+      label: string;
+      room: Room | null;
+      /** Link opcional no bloco (ex.: página de inscrição). */
+      href?: string;
+    };
 
 export type ScheduleDay = { day: string; date: string; items: ScheduleItem[] };
 
@@ -328,6 +335,7 @@ export const schedule: ScheduleDay[] = [
         type: 'highlight',
         label: 'Code in the Dark + Happy Hour de encerramento',
         room: 'Auditório Executivo',
+        href: '/inscricoes/code-in-the-dark',
       },
     ],
   },

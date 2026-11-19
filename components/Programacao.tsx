@@ -136,6 +136,11 @@ function DaySchedule({ day }: { day: ScheduleDay }) {
             <div className="prog-break-box">
               <span className="prog-break-label">{item.label}</span>
               {item.room && <span className="prog-break-room">{item.room}</span>}
+              {item.href && (
+                <a href={item.href} className="prog-break-link">
+                  Inscreva-se →
+                </a>
+              )}
             </div>
           </LiveBlock>
         );

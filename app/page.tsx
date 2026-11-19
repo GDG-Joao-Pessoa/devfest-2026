@@ -5,6 +5,7 @@ import Sobre from '@/components/Sobre';
 import Trilhas from '@/components/Trilhas';
 import Palestrantes from '@/components/Palestrantes';
 import Programacao from '@/components/Programacao';
+import Inscricoes from '@/components/Inscricoes';
 import Patrocinadores from '@/components/Patrocinadores';
 import Local from '@/components/Local';
 import Faq from '@/components/Faq';
@@ -22,6 +23,7 @@ export default function Home() {
       <Sobre />
       <Palestrantes />
       <Programacao />
+      <Inscricoes />
       {/* <Patrocinadores /> */}
       <Ingressos />
       <Local />
