@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import InscricaoPagina from '@/components/InscricaoPagina';
 import { atividadePorRota } from '@/lib/inscricoes';
 
-// Vagas restantes vêm do Supabase a cada acesso.
+// A situação das vagas (selo, lista de espera, encerrada) vem do Supabase a cada acesso.
 export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ atividade: string }> };
