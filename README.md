@@ -184,8 +184,8 @@ Atividades com vagas limitadas têm inscrição própria, separada do ingresso, 
 
 ### Configurar o Supabase
 1. Rode `supabase/migrations/20261119120000_inscricoes.sql` no projeto (SQL Editor, ou `supabase db push`).
-2. Copie `.env.example` para `.env.local` (dev) e `.dev.vars` (preview do Cloudflare) e preencha `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (publishable ou anon legada, **nunca** a service_role).
-3. Produção: `npx wrangler secret put SUPABASE_URL` e `npx wrangler secret put SUPABASE_PUBLISHABLE_KEY`.
+2. Produção e previews do Cloudflare: `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` ficam em `vars` no `wrangler.jsonc` e vão junto em cada deploy (Workers Builds), sem nada para cadastrar no painel. A chave publishable é pública por design; **nunca** coloque ali a secret / service_role.
+3. `next dev`: copie `.env.example` para `.env.local` com os mesmos valores do `wrangler.jsonc`.
 
 Segurança: as tabelas têm RLS ligado e nenhuma política, então a chave pública só consegue executar `inscrever` e `situacao_atividade` e não lista inscritos.
 
