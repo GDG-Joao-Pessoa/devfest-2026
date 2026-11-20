@@ -38,6 +38,13 @@ export type Atividade = {
   subtitulo: string;
   /** Resumo curto (card da home e meta description). */
   resumo: string;
+  /** Rótulo curto da faixa de aviso no topo do site (components/FaixaInscricoes.tsx). */
+  chamada: string;
+  /**
+   * Quando a atividade sai da faixa de aviso. Mesmo horário de
+   * `atividades.encerra_em` no Supabase (que é quem de fato fecha as inscrições).
+   */
+  encerraEm: string;
   descricao: string[];
   /** `null` mostra "a confirmar". */
   quando: string | null;
@@ -78,6 +85,8 @@ export const atividades: Record<SlugAtividade, Atividade> = {
     subtitulo: 'HTML, CSS e nenhum preview. Coragem é opcional, a plateia não.',
     resumo:
       'Recrie uma página do zero sem ver o resultado enquanto programa. A plateia escolhe quem chegou mais perto.',
+    chamada: 'Code in the Dark · sáb 17h',
+    encerraEm: '2026-11-21T17:00:00-03:00',
     descricao: [
       'O Code in the Dark é a competição de front-end que fecha o DevFest. Cada participante recebe a imagem de uma página e tem poucos minutos para recriá-la só com HTML e CSS, sem nunca ver o resultado no navegador.',
       'No fim, as telas são reveladas ao mesmo tempo e a plateia escolhe quem chegou mais perto. Tudo isso no clima do happy hour de encerramento.',
@@ -126,6 +135,8 @@ export const atividades: Record<SlugAtividade, Atividade> = {
     subtitulo: 'Com Arnaldo Gualberto, AI Tech Lead e Google Developer Expert em IA.',
     resumo:
       'Do zero a um assistente de code review com IA pronto para produção, usando o Agent Development Kit do Google.',
+    chamada: 'Workshop de IA com Arnaldo Gualberto · sex 14h',
+    encerraEm: '2026-11-20T14:00:00-03:00',
     descricao: [
       'Neste workshop, Arnaldo Gualberto mostra como construir um assistente de revisão de código com IA usando o Google ADK (Agent Development Kit) e o que muda quando ele precisa rodar em ambiente de produção.',
       'As vagas são limitadas. Quando elas acabam, novas inscrições entram na lista de espera, por ordem de chegada.',

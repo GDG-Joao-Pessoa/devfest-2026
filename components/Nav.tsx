@@ -2,6 +2,13 @@ import Image from 'next/image';
 import gdgLogo from '@/public/assets/gdg-jp-logo-white.png';
 import devfestBrackets from '@/public/assets/devfest-brackets-w3.png';
 import NavMenu, { type NavLink } from './NavMenu';
+import FaixaInscricoes from './FaixaInscricoes';
+import { listaAtividades } from '@/lib/inscricoes';
+
+const faixa = listaAtividades
+  .slice()
+  .sort((a, b) => a.encerraEm.localeCompare(b.encerraEm))
+  .map((a) => ({ href: `/inscricoes/${a.rota}`, chamada: a.chamada, encerraEm: a.encerraEm }));
 
 const links: NavLink[] = [
   { href: '#palestrantes', label: 'Palestrantes' },
@@ -20,6 +27,9 @@ export default function Nav({
   const items = links.map((l) => ({ ...l, href: base + l.href }));
 
   return (
+    <>
+    {/* Fora do <nav> sticky: rola junto com a página e libera espaço no mobile. */}
+    <FaixaInscricoes itens={faixa} />
     <nav className="site-nav">
       <a href={base ? '/' : '#top'} className="nav-brand">
         <Image
@@ -50,5 +60,6 @@ export default function Nav({
         <NavMenu links={items} />
       </div>
     </nav>
+    </>
   );
 }

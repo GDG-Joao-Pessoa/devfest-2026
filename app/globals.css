@@ -1148,6 +1148,88 @@ html:has(.spk-dialog[open]) {
    Cor da atividade em --insc-cor / --insc-cor-texto (lib/inscricoes.ts).
 --------------------------------------------------------------------------- */
 
+/* Faixa de aviso acima do menu (components/FaixaInscricoes.tsx) */
+.faixa-insc {
+  position: relative;
+  z-index: 61;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 18px;
+  padding: 10px 40px;
+  background:
+    linear-gradient(90deg, rgba(66, 133, 244, 0.22), rgba(52, 168, 83, 0.18) 50%, rgba(251, 188, 4, 0.16)),
+    #0e0e19;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font: 600 13.5px/1.35 var(--font-figtree);
+  color: #f2f2f7;
+  text-align: center;
+}
+.faixa-insc-rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 11.5px/1 var(--font-ibm);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #fcc934;
+}
+.faixa-insc-ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fbbc04;
+  box-shadow: 0 0 10px #fbbc04;
+}
+.faixa-insc-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+}
+.faixa-insc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.35);
+  text-underline-offset: 4px;
+}
+.faixa-insc-link + .faixa-insc-link {
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+.faixa-insc-link:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+@media (hover: hover) {
+  .faixa-insc-link:hover {
+    color: #8ab4f8;
+    text-decoration-color: currentColor;
+  }
+}
+@media (max-width: 560px) {
+  .faixa-insc {
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+  /* no celular cada atividade em uma linha, sem o divisor */
+  .faixa-insc-links {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .faixa-insc-link + .faixa-insc-link {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
 /* Link "Inscreva-se" no bloco do Code in the Dark (Programação) */
 .prog-break-link {
   display: inline-flex;
