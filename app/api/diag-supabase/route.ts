@@ -2,9 +2,20 @@
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  const { getCloudflareContext } = await import('@opennextjs/cloudflare');
+  let cfEnv: Record<string, unknown> = {};
+  let cfErro: string | undefined;
+  try {
+    cfEnv = (await getCloudflareContext({ async: true })).env as Record<string, unknown>;
+  } catch (e) {
+    cfErro = String(e);
+  }
+  const url = process.env.SUPABASE_URL ?? (cfEnv.SUPABASE_URL as string | undefined);
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY ?? (cfEnv.SUPABASE_PUBLISHABLE_KEY as string | undefined);
   const out: Record<string, unknown> = {
+    processEnvUrl: Boolean(process.env.SUPABASE_URL),
+    cfEnvChaves: Object.keys(cfEnv),
+    cfErro,
     temUrl: Boolean(url),
     temChave: Boolean(key),
     prefixoChave: key?.slice(0, 15),
