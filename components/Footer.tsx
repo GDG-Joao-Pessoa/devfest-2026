@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import gdgLogo from '@/public/assets/gdg-jp-logo-white.png';
+import { TICKETS_URL } from '@/lib/data';
 
 const columns = [
   {
@@ -8,7 +9,7 @@ const columns = [
       { href: '/palestrantes', label: 'Palestrantes' },
       { href: '#programacao', label: 'Programação' },
       { href: '#inscricoes', label: 'Inscrições' },
-      { href: '#ingressos', label: 'Ingressos' },
+      { href: TICKETS_URL, label: 'Ingressos' },
     ],
   },
   {
@@ -79,7 +80,12 @@ export default function Footer({
               >
                 {/* padding vertical: alvo de toque maior sem mudar o ritmo visual */}
                 {col.links.map((l, i) => (
-                  <a key={i} href={withBase(l.href)} style={{ padding: '5px 0' }}>
+                  <a
+                    key={i}
+                    href={withBase(l.href)}
+                    style={{ padding: '5px 0' }}
+                    {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  >
                     {l.label}
                   </a>
                 ))}

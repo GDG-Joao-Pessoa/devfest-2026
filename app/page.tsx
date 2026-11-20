@@ -9,7 +9,7 @@ import Inscricoes from '@/components/Inscricoes';
 import Patrocinadores from '@/components/Patrocinadores';
 import Local from '@/components/Local';
 import Faq from '@/components/Faq';
-import Ingressos from '@/components/Ingressos';
+import DestaqueWorkshop from '@/components/DestaqueWorkshop';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -19,13 +19,13 @@ export default function Home() {
     <div id="top" className="page">
       <Nav />
       <Hero />
+      <DestaqueWorkshop />
       <Marquee />
       <Sobre />
       <Palestrantes />
       <Programacao />
       <Inscricoes />
       {/* <Patrocinadores /> */}
-      <Ingressos />
       <Local />
       <Faq />
       <Footer />

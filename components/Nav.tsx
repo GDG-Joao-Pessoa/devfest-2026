@@ -4,6 +4,7 @@ import devfestBrackets from '@/public/assets/devfest-brackets-w3.png';
 import NavMenu, { type NavLink } from './NavMenu';
 import FaixaInscricoes from './FaixaInscricoes';
 import { dentroDaJanela, janelaDe, listaAtividades } from '@/lib/inscricoes';
+import { TICKETS_URL } from '@/lib/data';
 
 const porEncerramento = listaAtividades.slice().sort((a, b) => a.encerraEm.localeCompare(b.encerraEm));
 
@@ -60,7 +61,7 @@ export default function Nav({
             {l.label}
           </a>
         ))}
-        <a href={`${base}#ingressos`} className="nav-cta">
+        <a href={TICKETS_URL} target="_blank" rel="noopener noreferrer" className="nav-cta">
           Ingressos
         </a>
         <NavMenu links={items} />
