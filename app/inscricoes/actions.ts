@@ -1,6 +1,6 @@
 'use server';
 
-import { atividades, isSlugAtividade, type Atividade } from '@/lib/inscricoes';
+import { isSlugAtividade } from '@/lib/inscricoes';
 import { rpc } from '@/lib/supabase';
 
 /** Valores digitados, devolvidos em caso de erro para o formulário não perder nada. */
@@ -41,53 +41,27 @@ const texto = (fd: FormData, nome: string) => {
   return typeof v === 'string' ? v.trim() : '';
 };
 
-function validar(atividade: Atividade, fd: FormData) {
+/** Só nome, e-mail e WhatsApp. */
+function validar(fd: FormData) {
   const campos: Record<string, string> = {};
-  const valores: Valores = {};
 
   const nome = texto(fd, 'nome').replace(/\s+/g, ' ');
   const email = texto(fd, 'email').toLowerCase();
   const whatsappDigitado = texto(fd, 'whatsapp');
   const whatsapp = normalizarWhatsapp(whatsappDigitado);
-  Object.assign(valores, { nome, email, whatsapp: whatsappDigitado });
+  const valores: Valores = { nome, email, whatsapp: whatsappDigitado };
 
   if (nome.length < 2 || nome.length > 120) campos.nome = 'Informe seu nome completo.';
   if (!EMAIL_RE.test(email) || email.length > 254) campos.email = 'Informe um e-mail válido.';
   if (!whatsapp) campos.whatsapp = 'Informe um WhatsApp com DDD, ex.: (83) 99999-0000.';
 
-  const respostas: Record<string, string | boolean> = {};
-  for (const campo of atividade.campos) {
-    const v = texto(fd, campo.nome);
-    valores[campo.nome] = v;
-    if (campo.tipo === 'texto') {
-      if (campo.obrigatorio && !v) campos[campo.nome] = 'Campo obrigatório.';
-      else if (v.length > campo.max) campos[campo.nome] = `Use no máximo ${campo.max} caracteres.`;
-      else if (v) respostas[campo.nome] = v;
-    } else if (campo.tipo === 'opcoes') {
-      if (!campo.opcoes.some((o) => o.valor === v)) campos[campo.nome] = 'Escolha uma opção.';
-      else respostas[campo.nome] = v;
-    } else {
-      if (v !== 'sim' && v !== 'nao') campos[campo.nome] = 'Escolha sim ou não.';
-      else respostas[campo.nome] = v === 'sim';
-    }
-  }
-
-  atividade.confirmacoes.forEach((_, i) => {
-    const nomeCampo = `confirmacao_${i}`;
-    if (fd.get(nomeCampo) !== 'on') campos[nomeCampo] = 'Marque para continuar.';
-    else valores[nomeCampo] = 'on';
-  });
-  if (fd.get('consentimento') !== 'on') campos.consentimento = 'Marque para continuar.';
-  else valores.consentimento = 'on';
-
-  return { campos, valores, dados: { nome, email, whatsapp: whatsapp ?? '', respostas } };
+  return { campos, valores, dados: { nome, email, whatsapp: whatsapp ?? '' } };
 }
 
 const MENSAGENS_ERRO: Record<string, string> = {
   inscricoes_encerradas: 'As inscrições para esta atividade foram encerradas.',
   vagas_esgotadas: 'As vagas e a lista de espera já estão completas.',
   atividade_inexistente: 'Atividade não encontrada.',
-  nao_configurado: 'As inscrições estão indisponíveis no momento. Tente de novo mais tarde.',
 };
 const ERRO_GENERICO = 'Não foi possível concluir sua inscrição agora. Tente de novo em instantes.';
 
@@ -106,7 +80,7 @@ export async function inscrever(
     return { tipo: 'erro', mensagem: ERRO_GENERICO, campos: {}, valores: {}, envio };
   }
 
-  const { campos, valores, dados } = validar(atividades[slug], fd);
+  const { campos, valores, dados } = validar(fd);
   if (Object.keys(campos).length > 0) {
     return { tipo: 'erro', mensagem: 'Confira os campos destacados.', campos, valores, envio };
   }
@@ -118,7 +92,7 @@ export async function inscrever(
       p_nome: dados.nome,
       p_email: dados.email,
       p_whatsapp: dados.whatsapp,
-      p_respostas: dados.respostas,
+      // p_respostas fica com o padrão do banco ('{}'): não há perguntas extras.
     },
   );
 

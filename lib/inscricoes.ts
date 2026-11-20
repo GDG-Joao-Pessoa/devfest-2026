@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
-// Atividades com inscrição (vagas limitadas). Fonte única das páginas
-// /inscricoes/<rota>, do formulário e da validação no servidor
-// (app/inscricoes/actions.ts).
+// Atividades com inscrição (vagas limitadas). Fonte única do conteúdo das
+// páginas /inscricoes/<rota>, da faixa de aviso e dos cards da home.
+// O formulário pede só nome, e-mail e WhatsApp (app/inscricoes/actions.ts).
 //
 // Vagas, abertura e encerramento ficam no Supabase (tabela `atividades`,
 // ver supabase/migrations) para a organização mudar sem novo deploy.
@@ -11,23 +11,6 @@ import { schedule } from '@/data/schedule';
 import { GDG } from '@/lib/data';
 
 export type SlugAtividade = 'code-in-the-dark' | 'workshop-adk';
-
-type Opcao = { valor: string; rotulo: string };
-
-/** Pergunta extra da atividade. A resposta vai para `inscricoes.respostas[nome]`. */
-export type Campo =
-  | {
-      tipo: 'texto';
-      nome: string;
-      rotulo: string;
-      obrigatorio: boolean;
-      max: number;
-      placeholder?: string;
-      autoComplete?: string;
-      ajuda?: string;
-    }
-  | { tipo: 'opcoes'; nome: string; rotulo: string; opcoes: Opcao[]; ajuda?: string }
-  | { tipo: 'simnao'; nome: string; rotulo: string; ajuda?: string };
 
 export type Atividade = {
   slug: SlugAtividade;
@@ -55,9 +38,6 @@ export type Atividade = {
   destaques: string[];
   cor: string;
   corTexto: string;
-  campos: Campo[];
-  /** Caixas que precisam ser marcadas para enviar (não são gravadas). */
-  confirmacoes: string[];
 };
 
 /** "Sábado · 21/11 · 17:00" a partir de um item da programação. */
@@ -73,8 +53,6 @@ function quandoNaProgramacao(label: string): { quando: string; onde: string | nu
 }
 
 const codeInTheDarkNaProgramacao = quandoNaProgramacao('Code in the Dark');
-
-const CONFIRMACAO_INGRESSO = 'Tenho ingresso para o DevFest João Pessoa 2026.';
 
 export const atividades: Record<SlugAtividade, Atividade> = {
   'code-in-the-dark': {
@@ -103,29 +81,6 @@ export const atividades: Record<SlugAtividade, Atividade> = {
     ],
     cor: GDG.red,
     corTexto: GDG.redText,
-    campos: [
-      {
-        tipo: 'texto',
-        nome: 'github',
-        rotulo: 'GitHub ou portfólio',
-        obrigatorio: false,
-        max: 200,
-        placeholder: 'github.com/seu-usuario',
-        autoComplete: 'url',
-      },
-      {
-        tipo: 'opcoes',
-        nome: 'experiencia',
-        rotulo: 'Experiência com HTML e CSS',
-        opcoes: [
-          { valor: 'iniciante', rotulo: 'Iniciante: estou aprendendo' },
-          { valor: 'intermediario', rotulo: 'Intermediário: já fiz alguns sites' },
-          { valor: 'avancado', rotulo: 'Avançado: CSS é meu playground' },
-        ],
-      },
-      { tipo: 'simnao', nome: 'ja_participou', rotulo: 'Já participou de um Code in the Dark?' },
-    ],
-    confirmacoes: [CONFIRMACAO_INGRESSO, 'Li e aceito as regras da competição.'],
   },
   'workshop-adk': {
     slug: 'workshop-adk',
@@ -152,49 +107,6 @@ export const atividades: Record<SlugAtividade, Atividade> = {
     ],
     cor: GDG.blue,
     corTexto: GDG.blueText,
-    campos: [
-      {
-        tipo: 'texto',
-        nome: 'empresa',
-        rotulo: 'Empresa ou instituição',
-        obrigatorio: false,
-        max: 120,
-        autoComplete: 'organization',
-      },
-      {
-        tipo: 'opcoes',
-        nome: 'area',
-        rotulo: 'Área de atuação',
-        opcoes: [
-          { valor: 'backend', rotulo: 'Back-end' },
-          { valor: 'frontend', rotulo: 'Front-end' },
-          { valor: 'fullstack', rotulo: 'Full-stack' },
-          { valor: 'mobile', rotulo: 'Mobile' },
-          { valor: 'dados-ia', rotulo: 'Dados & IA' },
-          { valor: 'devops', rotulo: 'DevOps, SRE ou Cloud' },
-          { valor: 'estudante', rotulo: 'Estudante' },
-          { valor: 'outra', rotulo: 'Outra' },
-        ],
-      },
-      {
-        tipo: 'opcoes',
-        nome: 'nivel_python',
-        rotulo: 'Nível em Python',
-        opcoes: [
-          { valor: 'nunca', rotulo: 'Nunca usei' },
-          { valor: 'basico', rotulo: 'Básico' },
-          { valor: 'intermediario', rotulo: 'Intermediário' },
-          { valor: 'avancado', rotulo: 'Avançado' },
-        ],
-      },
-      {
-        tipo: 'simnao',
-        nome: 'leva_notebook',
-        rotulo: 'Vai levar notebook?',
-        ajuda: 'Ajuda a organização a preparar a sala.',
-      },
-    ],
-    confirmacoes: [CONFIRMACAO_INGRESSO],
   },
 };
 
