@@ -3,6 +3,7 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import InscricaoForm from '@/components/InscricaoForm';
 import {
+  antesDaAbertura,
   esperaRestante,
   ultimasVagas,
   vagasRestantes,
@@ -26,6 +27,8 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
   const esgotado = restantes === 0;
   /** Vagas e lista de espera (com limite) completas. */
   const lotado = esgotado && espera === 0;
+  /** Inscrições ainda não abriram (ex.: Code in the Dark antes de sáb 08:00). */
+  const emBreve = antesDaAbertura(atividade, Date.now());
 
   const meta = [
     { rotulo: 'Quando', valor: atividade.quando ?? 'A confirmar' },
@@ -51,7 +54,14 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
               <h1 className="insc-titulo">{atividade.titulo}</h1>
               <p className="insc-subtitulo">{atividade.subtitulo}</p>
 
-              {situacao && <Selo situacao={situacao} encerrada={encerrada} lotado={lotado} />}
+              {emBreve && atividade.abertura ? (
+                <div className="insc-selo insc-selo--esgotada">
+                  <span className="insc-selo-ponto" aria-hidden="true" />
+                  Inscrições abrem {atividade.abertura.texto}
+                </div>
+              ) : (
+                situacao && <Selo situacao={situacao} encerrada={encerrada} lotado={lotado} />
+              )}
 
               <dl className="insc-meta">
                 {meta.map((m) => (
@@ -83,7 +93,15 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
                 slug={atividade.slug}
                 titulo={atividade.titulo}
                 esgotado={esgotado}
-                fechado={encerrada ? 'encerrada' : lotado ? 'lotada' : null}
+                fechado={
+                  emBreve && atividade.abertura
+                    ? { motivo: 'em_breve', abertura: atividade.abertura.texto }
+                    : encerrada
+                      ? { motivo: 'encerrada' }
+                      : lotado
+                        ? { motivo: 'lotada' }
+                        : null
+                }
                 cabecalho={
                   esgotado
                     ? {

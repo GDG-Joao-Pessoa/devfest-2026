@@ -3,12 +3,9 @@ import gdgLogo from '@/public/assets/gdg-jp-logo-white.png';
 import devfestBrackets from '@/public/assets/devfest-brackets-w3.png';
 import NavMenu, { type NavLink } from './NavMenu';
 import FaixaInscricoes from './FaixaInscricoes';
-import { listaAtividades } from '@/lib/inscricoes';
+import { dentroDaJanela, janelaDe, listaAtividades } from '@/lib/inscricoes';
 
-const faixa = listaAtividades
-  .slice()
-  .sort((a, b) => a.encerraEm.localeCompare(b.encerraEm))
-  .map((a) => ({ href: `/inscricoes/${a.rota}`, chamada: a.chamada, encerraEm: a.encerraEm }));
+const porEncerramento = listaAtividades.slice().sort((a, b) => a.encerraEm.localeCompare(b.encerraEm));
 
 const links: NavLink[] = [
   { href: '#palestrantes', label: 'Palestrantes' },
@@ -25,6 +22,15 @@ export default function Nav({
   base?: string;
 }) {
   const items = links.map((l) => ({ ...l, href: base + l.href }));
+  // `inicial`: visibilidade no momento do render (build nas páginas estáticas,
+  // request nas dinâmicas); o navegador reavalia depois (components/NaJanela.tsx).
+  const agora = Date.now();
+  const faixa = porEncerramento.map((a) => ({
+    href: `/inscricoes/${a.rota}`,
+    chamada: a.chamada,
+    janela: janelaDe(a),
+    inicial: dentroDaJanela(janelaDe(a), agora),
+  }));
 
   return (
     <>

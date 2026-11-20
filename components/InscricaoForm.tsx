@@ -10,8 +10,12 @@ type Props = {
   titulo: string;
   /** Vagas cheias: a inscrição vai para a lista de espera. */
   esgotado: boolean;
-  /** Sem formulário: inscrições encerradas, ou vagas e lista de espera completas. */
-  fechado: 'encerrada' | 'lotada' | null;
+  /** Sem formulário: ainda não abriu, encerrada, ou vagas e lista de espera completas. */
+  fechado:
+    | { motivo: 'em_breve'; abertura: string }
+    | { motivo: 'encerrada' }
+    | { motivo: 'lotada' }
+    | null;
   cabecalho: { titulo: string; texto: string };
 };
 
@@ -42,17 +46,25 @@ export default function InscricaoForm({ slug, titulo, esgotado, fechado, cabecal
   }
 
   if (fechado) {
+    const [tituloFechado, textoFechado] =
+      fechado.motivo === 'em_breve'
+        ? [
+            'Inscrições em breve',
+            `As inscrições abrem ${fechado.abertura}. Volte aqui nesse horário para garantir sua vaga.`,
+          ]
+        : fechado.motivo === 'encerrada'
+          ? [
+              'Inscrições encerradas',
+              'As inscrições para esta atividade já foram encerradas. Confira o restante da programação do DevFest.',
+            ]
+          : [
+              'Vagas esgotadas',
+              'Todas as vagas e a lista de espera já foram preenchidas. Confira o restante da programação do DevFest.',
+            ];
     return (
       <div className="insc-encerrada">
-        <h2 className="insc-resultado-titulo">
-          {fechado === 'encerrada' ? 'Inscrições encerradas' : 'Vagas esgotadas'}
-        </h2>
-        <p className="insc-resultado-texto">
-          {fechado === 'encerrada'
-            ? 'As inscrições para esta atividade já foram encerradas.'
-            : 'Todas as vagas e a lista de espera já foram preenchidas.'}{' '}
-          Confira o restante da programação do DevFest.
-        </p>
+        <h2 className="insc-resultado-titulo">{tituloFechado}</h2>
+        <p className="insc-resultado-texto">{textoFechado}</p>
         <Link href="/#programacao" className="spk-all-link">
           Ver a programação →
         </Link>

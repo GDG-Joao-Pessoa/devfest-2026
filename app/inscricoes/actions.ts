@@ -1,6 +1,6 @@
 'use server';
 
-import { isSlugAtividade } from '@/lib/inscricoes';
+import { antesDaAbertura, atividades, isSlugAtividade } from '@/lib/inscricoes';
 import { rpc } from '@/lib/supabase';
 
 /** Valores digitados, devolvidos em caso de erro para o formulário não perder nada. */
@@ -73,6 +73,19 @@ export async function inscrever(
   const slug = fd.get('atividade');
   if (!isSlugAtividade(slug)) {
     return { tipo: 'erro', mensagem: 'Atividade não encontrada.', campos: {}, valores: {}, envio };
+  }
+
+  // Antes da abertura (ex.: Code in the Dark antes de sáb 08:00), recusa mesmo
+  // quem tiver o link direto ou a página aberta desde antes.
+  const atividade = atividades[slug];
+  if (antesDaAbertura(atividade, Date.now()) && atividade.abertura) {
+    return {
+      tipo: 'erro',
+      mensagem: `As inscrições abrem ${atividade.abertura.texto}.`,
+      campos: {},
+      valores: {},
+      envio,
+    };
   }
 
   // Honeypot: campo invisível que só robôs preenchem.

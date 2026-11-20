@@ -24,7 +24,13 @@ export type Atividade = {
   /** Rótulo curto da faixa de aviso no topo do site (components/FaixaInscricoes.tsx). */
   chamada: string;
   /**
-   * Quando a atividade sai da faixa de aviso. Mesmo horário de
+   * Abertura das inscrições: antes disso os links ficam escondidos (faixa,
+   * home, programação), a página mostra só o aviso e o servidor recusa o envio.
+   * `null` = já abertas.
+   */
+  abertura: { em: string; texto: string } | null;
+  /**
+   * Quando a atividade sai da faixa de aviso e da home. Mesmo horário de
    * `atividades.encerra_em` no Supabase (que é quem de fato fecha as inscrições).
    */
   encerraEm: string;
@@ -64,6 +70,7 @@ export const atividades: Record<SlugAtividade, Atividade> = {
     resumo:
       'Recrie uma página do zero sem ver o resultado enquanto programa. A plateia escolhe quem chegou mais perto.',
     chamada: 'Code in the Dark · sáb 17h',
+    abertura: { em: '2026-11-21T08:00:00-03:00', texto: 'sábado (21/11) às 08:00' },
     encerraEm: '2026-11-21T17:00:00-03:00',
     descricao: [
       'O Code in the Dark é a competição de front-end que fecha o DevFest. Cada participante recebe a imagem de uma página e tem poucos minutos para recriá-la só com HTML e CSS, sem nunca ver o resultado no navegador.',
@@ -91,6 +98,7 @@ export const atividades: Record<SlugAtividade, Atividade> = {
     resumo:
       'Do zero a um assistente de code review com IA pronto para produção, usando o Agent Development Kit do Google.',
     chamada: 'Workshop de IA com Arnaldo Gualberto · sex 14h',
+    abertura: null,
     encerraEm: '2026-11-20T14:00:00-03:00',
     descricao: [
       'Neste workshop, Arnaldo Gualberto mostra como construir um assistente de revisão de código com IA usando o Google ADK (Agent Development Kit) e o que muda quando ele precisa rodar em ambiente de produção.',
@@ -116,6 +124,21 @@ export const atividadePorRota = (rota: string) => listaAtividades.find((a) => a.
 
 export const isSlugAtividade = (s: unknown): s is SlugAtividade =>
   typeof s === 'string' && s in atividades;
+
+/** Janela em que os links de inscrição aparecem: [abertura, encerramento). */
+export type Janela = { abreEm: string | null; encerraEm: string };
+
+export const janelaDe = (a: Atividade): Janela => ({
+  abreEm: a.abertura?.em ?? null,
+  encerraEm: a.encerraEm,
+});
+
+export const dentroDaJanela = (j: Janela, agora: number) =>
+  (j.abreEm === null || agora >= Date.parse(j.abreEm)) && agora < Date.parse(j.encerraEm);
+
+/** Ainda não abriu (a página mostra o aviso e o servidor recusa o envio). */
+export const antesDaAbertura = (a: Atividade, agora: number) =>
+  a.abertura !== null && agora < Date.parse(a.abertura.em);
 
 /** Situação lida do Supabase (`situacao_atividade`). */
 export type Situacao = {
