@@ -196,6 +196,26 @@ Segurança: as tabelas têm RLS ligado e nenhuma política, então a chave públ
 
 ---
 
+## Sorteio (1º dia)
+
+- **`/sorteio`:** inscrição pública (nome, e-mail, WhatsApp), pensada para o celular. Não tem link no site: o público chega pelo QR Code do telão. `noindex`.
+- **`/sorteio/telao`:** tela para projetar, protegida por senha. QR Code grande, número de participantes (atualiza a cada 5 s), botão **Sortear** com animação nas cores do Google e confete, **"Ausente? Sortear de novo"**, lista de ganhadores (dá para marcar/desmarcar ausente) e, discretos no rodapé, **Encerrar/Reabrir inscrições**, **Tela cheia** e **Sair**. A senha fica só na aba aberta (`sessionStorage`).
+- **Justo e seguro:** o ganhador é escolhido **no banco** (`order by random()`), nunca no navegador; quem já saiu não é sorteado de novo (mesmo se ausente). O telão nunca recebe e-mail: só o nome e os 4 últimos dígitos do WhatsApp, para diferenciar nomes iguais. Senha errada espera 1 s antes de responder.
+- **Código:** `supabase/migrations/20261120090000_sorteio.sql`, `lib/sorteio.ts`, `app/sorteio/` (páginas, actions e `sorteio.css`), `components/sorteio/`.
+
+### Configurar o sorteio
+1. Rode `supabase/migrations/20261120090000_sorteio.sql` no SQL Editor do Supabase.
+2. Defina a senha do telão (também no SQL Editor; use uma senha forte, ela vale para todo mundo da organização):
+   ```sql
+   update public.sorteio_config
+      set senha_hash = extensions.crypt('SUA-SENHA-FORTE', extensions.gen_salt('bf'))
+    where id = 1;
+   ```
+   Para trocar a senha, rode o mesmo comando com a nova.
+3. **Lista completa (com e-mail) para a organização:** view `sorteio_lista` no painel do Supabase (exporta CSV).
+
+---
+
 ## Screen — Banner (1280×575)
 Peça fixa `1280×575` (exportável). Fundo `radial-gradient(120% 130% at 50% 0%,#141426,#0a0a14 55%,#08080f)`.
 - **Anéis concêntricos** à direita (4 círculos com borda fina nas cores GDG, baixa opacidade) + 1 espelhado à esquerda (branco .05).

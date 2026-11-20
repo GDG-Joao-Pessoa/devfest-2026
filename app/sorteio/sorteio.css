@@ -1,0 +1,548 @@
+/* ---------------------------------------------------------------------------
+   Sorteio — /sorteio (inscrição, celular) e /sorteio/telao (projeção 16:9).
+   Identidade GDG/DevFest: fundo escuro, blobs nas 4 cores do Google, Sora nos
+   títulos e o gradiente-assinatura azul → verde → amarelo → vermelho.
+   Reaproveita os campos .insc-* do globals.css.
+--------------------------------------------------------------------------- */
+
+.srt-pagina {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 0%, #141426, #0a0a14 55%, #08080f);
+  color: #f2f2f7;
+}
+
+/* Blobs animados */
+.srt-blobs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* Gradiente radial em vez de filter: blur — mesmo visual, bem mais leve para o
+   notebook ligado no projetor (a animação só mexe em transform). */
+.srt-blob {
+  position: absolute;
+  width: 64vmax;
+  height: 64vmax;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: floaty 11s ease-in-out infinite;
+  will-change: transform;
+}
+.srt-blob--azul {
+  top: -30vmax;
+  left: -24vmax;
+  background: radial-gradient(circle, #4285f4 0%, transparent 62%);
+}
+.srt-blob--vermelho {
+  top: -28vmax;
+  right: -28vmax;
+  background: radial-gradient(circle, #ea4335 0%, transparent 62%);
+  animation-duration: 13s;
+}
+.srt-blob--amarelo {
+  bottom: -36vmax;
+  left: 0;
+  background: radial-gradient(circle, #fbbc04 0%, transparent 62%);
+  opacity: 0.2;
+  animation-duration: 9s;
+}
+.srt-blob--verde {
+  bottom: -34vmax;
+  right: -22vmax;
+  background: radial-gradient(circle, #34a853 0%, transparent 62%);
+  animation-duration: 12s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .srt-blob {
+    animation: none;
+  }
+}
+
+.srt-gradiente {
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 42%, #fbbc04 72%, #ea4335 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.srt-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font: 600 12.5px/1 var(--font-ibm);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(242, 242, 247, 0.85);
+}
+.srt-pill-ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34a853;
+  box-shadow: 0 0 10px #34a853;
+}
+
+.srt-card {
+  position: relative;
+  width: 100%;
+  padding: 28px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  background: rgba(18, 18, 28, 0.92);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+}
+.srt-card::before {
+  /* fio nas 4 cores no topo do card */
+  content: '';
+  position: absolute;
+  inset: 0 22px auto;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, #4285f4 0 25%, #ea4335 25% 50%, #fbbc04 50% 75%, #34a853 75%);
+}
+.srt-card-texto {
+  margin: 0 0 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(242, 242, 247, 0.72);
+}
+.srt-resultado-titulo {
+  margin: 0 0 10px;
+  font: 800 24px/1.2 var(--font-sora);
+  letter-spacing: -0.5px;
+}
+.srt-enviar {
+  width: 100%;
+}
+
+/* ---------------------------------------------------------------- /sorteio */
+
+.srt-inscricao {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+  text-align: center;
+}
+.srt-topo {
+  margin-bottom: 30px;
+}
+.srt-logo-gdg {
+  width: auto;
+  height: 26px;
+}
+.srt-logo-devfest {
+  width: auto;
+  height: 64px;
+  filter: drop-shadow(0 10px 30px rgba(66, 133, 244, 0.35));
+}
+.srt-cidade {
+  margin: 2px 0 22px;
+  padding-left: 8px;
+  font: 700 17px/1 var(--font-sora);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 42%, #fbbc04 72%, #ea4335 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.srt-titulo {
+  margin: 18px 0 26px;
+  font: 800 clamp(38px, 11vw, 52px)/1 var(--font-sora);
+  letter-spacing: -1.5px;
+}
+.srt-inscricao .srt-card {
+  text-align: left;
+}
+.srt-sucesso,
+.srt-fechado {
+  text-align: center;
+}
+.srt-sucesso:focus {
+  outline: none;
+}
+.srt-sucesso-icone {
+  margin-bottom: 8px;
+  font-size: 44px;
+  line-height: 1;
+}
+.srt-voltar {
+  margin-top: 26px;
+  font: 500 12px var(--font-ibm);
+  color: rgba(242, 242, 247, 0.45);
+}
+
+/* ------------------------------------------------------------ /sorteio/telao */
+
+.srt-telao-login {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.srt-login {
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+  text-align: left;
+}
+.srt-login .srt-logo-devfest {
+  height: 52px;
+  margin-bottom: 8px;
+}
+
+.srt-telao {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.4vh, 32px);
+  padding: clamp(18px, 3vh, 36px) clamp(20px, 3.5vw, 64px);
+}
+.srt-telao > :not(.srt-blobs):not(.srt-confete) {
+  position: relative;
+  z-index: 1;
+}
+.srt-confete {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.srt-telao-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.srt-telao-marcas {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.srt-telao-marcas .srt-logo-gdg {
+  height: clamp(26px, 3.6vh, 40px);
+}
+.srt-divisor {
+  width: 1px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.2);
+}
+.srt-telao-devfest {
+  width: auto;
+  height: clamp(30px, 4.6vh, 52px);
+}
+
+.srt-telao-corpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.8fr) 2fr;
+  align-items: center;
+  gap: clamp(24px, 4vw, 72px);
+}
+
+/* QR Code */
+.srt-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(18px, 2.4vw, 32px);
+  border-radius: 28px;
+  background: #fff;
+  color: #08080f;
+  box-shadow: 0 30px 80px -30px rgba(66, 133, 244, 0.7);
+  transition: opacity 0.3s, filter 0.3s;
+}
+.srt-qr-codigo {
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 1;
+}
+.srt-qr-codigo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.srt-qr-texto {
+  display: grid;
+  gap: 6px;
+  text-align: center;
+}
+.srt-qr-texto strong {
+  font: 800 clamp(16px, 1.6vw, 24px)/1.15 var(--font-sora);
+}
+.srt-qr-texto span {
+  font: 600 clamp(11px, 0.9vw, 14px)/1.3 var(--font-ibm);
+  color: #4285f4;
+}
+.srt-qr--fechado {
+  opacity: 0.55;
+  filter: grayscale(1);
+}
+
+/* Palco */
+.srt-palco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(10px, 2vh, 22px);
+}
+.srt-telao-titulo {
+  margin: 0;
+  font: 800 clamp(44px, 6.4vw, 108px)/0.95 var(--font-sora);
+  letter-spacing: -0.03em;
+}
+.srt-contador {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.srt-contador-numero {
+  font: 800 clamp(28px, 3.4vw, 56px)/1 var(--font-sora);
+  color: #8ab4f8;
+}
+.srt-contador-rotulo {
+  font: 600 clamp(14px, 1.3vw, 20px)/1 var(--font-ibm);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(242, 242, 247, 0.6);
+}
+
+.srt-roleta {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: clamp(150px, 24vh, 280px);
+  padding: 20px;
+  border: 2px solid transparent;
+  border-radius: 28px;
+  background:
+    linear-gradient(#0e0e19, #0e0e19) padding-box,
+    linear-gradient(90deg, #4285f4, #ea4335, #fbbc04, #34a853) border-box;
+}
+.srt-roleta--girando {
+  animation: srt-brilho 0.9s ease-in-out infinite alternate;
+}
+@keyframes srt-brilho {
+  to {
+    box-shadow: 0 0 60px -10px rgba(66, 133, 244, 0.7);
+  }
+}
+.srt-roleta-espera {
+  font: 700 clamp(22px, 2.6vw, 44px)/1.2 var(--font-sora);
+  color: rgba(242, 242, 247, 0.4);
+}
+.srt-roleta-nome {
+  font: 800 clamp(32px, 4.8vw, 84px)/1.05 var(--font-sora);
+  letter-spacing: -0.02em;
+}
+.srt-ganhador {
+  display: grid;
+  gap: 10px;
+  animation: srt-revelar 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes srt-revelar {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+.srt-ganhador-rotulo {
+  font: 700 clamp(14px, 1.4vw, 22px)/1 var(--font-ibm);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fcc934;
+}
+.srt-ganhador-nome {
+  font: 800 clamp(38px, 5.6vw, 100px)/1 var(--font-sora);
+  letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 42%, #fbbc04 72%, #ea4335 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.srt-ganhador-final {
+  font: 600 clamp(13px, 1.2vw, 18px)/1 var(--font-ibm);
+  color: rgba(242, 242, 247, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .srt-roleta--girando,
+  .srt-ganhador {
+    animation: none;
+  }
+}
+
+.srt-erro {
+  margin: 0;
+}
+.srt-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+.srt-sortear {
+  min-height: clamp(54px, 7vh, 76px);
+  padding: 0 clamp(32px, 3.6vw, 64px);
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  color: #fff;
+  font: 800 clamp(18px, 1.8vw, 28px)/1 var(--font-sora);
+  cursor: pointer;
+  box-shadow: 0 16px 44px -12px rgba(66, 133, 244, 0.75);
+  transition: transform 0.15s, filter 0.2s, opacity 0.2s;
+}
+.srt-sortear:not(:disabled):hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+.srt-sortear:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.srt-secundario {
+  min-height: clamp(54px, 7vh, 76px);
+  padding: 0 28px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f2f2f7;
+  font: 700 clamp(14px, 1.2vw, 18px)/1 var(--font-figtree);
+  cursor: pointer;
+}
+.srt-sortear:focus-visible,
+.srt-secundario:focus-visible,
+.srt-controles button:focus-visible,
+.srt-chip-acao:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 3px;
+}
+
+/* Ganhadores */
+.srt-ganhadores h2 {
+  margin: 0 0 12px;
+  font: 700 12px/1 var(--font-ibm);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(242, 242, 247, 0.55);
+}
+.srt-ganhadores ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.srt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 6px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(18, 18, 28, 0.8);
+  font: 600 15px/1 var(--font-figtree);
+}
+.srt-chip-n {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #08080f;
+  font: 800 13px/1 var(--font-sora);
+}
+.srt-chip-final {
+  font: 500 12px/1 var(--font-ibm);
+  color: rgba(242, 242, 247, 0.5);
+}
+.srt-chip-acao {
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(242, 242, 247, 0.6);
+  font: 600 11px/1 var(--font-ibm);
+  cursor: pointer;
+}
+.srt-chip--ausente {
+  opacity: 0.5;
+}
+.srt-chip--ausente .srt-chip-nome {
+  text-decoration: line-through;
+}
+
+/* Controles da organização (discretos, no rodapé) */
+.srt-controles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  opacity: 0.45;
+  transition: opacity 0.2s;
+}
+.srt-controles:hover,
+.srt-controles:focus-within {
+  opacity: 1;
+}
+.srt-controles button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(8, 8, 15, 0.6);
+  color: #f2f2f7;
+  font: 600 13px/1 var(--font-figtree);
+  cursor: pointer;
+}
+.srt-controles button:disabled {
+  opacity: 0.5;
+}
+
+/* A regra geral do site (globals.css, ≤ 560px) aumenta todo h2 para 32px e
+   força padding lateral em header/section/footer: aqui não se aplica. */
+@media (max-width: 560px) {
+  .srt-pagina .srt-resultado-titulo {
+    font-size: 22px !important;
+  }
+  .srt-pagina .srt-ganhadores h2 {
+    font-size: 12px !important;
+  }
+  .srt-pagina header,
+  .srt-pagina section,
+  .srt-pagina footer {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* Telão em telas estreitas (notebook pequeno / celular da organização) */
+@media (max-width: 820px) {
+  .srt-telao-corpo {
+    grid-template-columns: 1fr;
+  }
+  .srt-qr {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .srt-telao-topo .srt-pill {
+    display: none;
+  }
+}

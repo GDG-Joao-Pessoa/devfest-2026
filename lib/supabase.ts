@@ -43,7 +43,9 @@ export async function rpc<T>(funcao: string, args: Record<string, unknown>): Pro
     if (!res.ok) {
       // Erros levantados nas funções (raise exception 'x') chegam em `message`.
       const erro = typeof body?.message === 'string' ? body.message : `http_${res.status}`;
-      if (!erro.startsWith('inscricoes_') && !erro.startsWith('atividade_')) {
+      // Erros de regra (encerrado, senha errada...) são esperados: não vão para o log.
+      const esperado = /^(inscricoes_|atividade_|vagas_|sorteio_|senha_|sem_participantes)/;
+      if (!esperado.test(erro)) {
         console.error(`[supabase] ${funcao} falhou`, res.status, body);
       }
       return { ok: false, erro };
