@@ -2,7 +2,13 @@ import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import InscricaoForm from '@/components/InscricaoForm';
-import { esperaRestante, vagasRestantes, type Atividade, type Situacao } from '@/lib/inscricoes';
+import {
+  esperaRestante,
+  ultimasVagas,
+  vagasRestantes,
+  type Atividade,
+  type Situacao,
+} from '@/lib/inscricoes';
 import { rpc } from '@/lib/supabase';
 
 async function lerSituacao(atividade: Atividade): Promise<Situacao | null> {
@@ -10,11 +16,9 @@ async function lerSituacao(atividade: Atividade): Promise<Situacao | null> {
   return res.ok ? res.data : null;
 }
 
-const plural = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
-
 /** Página /inscricoes/<rota>: informações da atividade + formulário. */
 export default async function InscricaoPagina({ atividade }: { atividade: Atividade }) {
-  // Sem Supabase (ex.: dev sem .env.local) a página abre mesmo assim; o envio avisa o erro.
+  // Se o Supabase não responder, a página abre sem o selo; o envio mostra o erro.
   const situacao = await lerSituacao(atividade);
   const restantes = situacao ? vagasRestantes(situacao) : null;
   const espera = situacao ? esperaRestante(situacao) : null;
@@ -47,9 +51,7 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
               <h1 className="insc-titulo">{atividade.titulo}</h1>
               <p className="insc-subtitulo">{atividade.subtitulo}</p>
 
-              {situacao && restantes !== null && (
-                <Selo situacao={situacao} restantes={restantes} espera={espera} encerrada={encerrada} />
-              )}
+              {situacao && <Selo situacao={situacao} encerrada={encerrada} lotado={lotado} />}
 
               <dl className="insc-meta">
                 {meta.map((m) => (
@@ -86,11 +88,8 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
                   esgotado
                     ? {
                         titulo: 'Lista de espera',
-                        texto: `As vagas acabaram, mas você ainda pode entrar na lista de espera${
-                          espera !== null
-                            ? ` (${plural(espera, 'lugar restante', 'lugares restantes')})`
-                            : ''
-                        }. Chamamos por ordem de inscrição.`,
+                        texto:
+                          'As vagas acabaram, mas você ainda pode entrar na lista de espera. Chamamos por ordem de inscrição.',
                       }
                     : {
                         titulo: 'Faça sua inscrição',
@@ -107,26 +106,25 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
   );
 }
 
+/** Selo de situação, sem números: a organização não quer expor quantas vagas restam. */
 function Selo({
   situacao,
-  restantes,
-  espera,
   encerrada,
+  lotado,
 }: {
   situacao: Situacao;
-  restantes: number;
-  espera: number | null;
   encerrada: boolean;
+  lotado: boolean;
 }) {
   const [texto, variante] = encerrada
     ? ['Inscrições encerradas', 'encerrada']
-    : restantes > 0
-      ? [`${plural(restantes, 'vaga restante', 'vagas restantes')} de ${situacao.vagas}`, 'aberta']
-      : espera === null
+    : lotado
+      ? ['Vagas esgotadas', 'encerrada']
+      : vagasRestantes(situacao) === 0
         ? ['Vagas esgotadas · lista de espera aberta', 'esgotada']
-        : espera > 0
-          ? [`Vagas esgotadas · ${plural(espera, 'lugar', 'lugares')} na lista de espera`, 'esgotada']
-          : ['Vagas e lista de espera esgotadas', 'encerrada'];
+        : ultimasVagas(situacao)
+          ? ['Últimas vagas', 'ultimas']
+          : ['Vagas limitadas', 'aberta'];
 
   return (
     <div className={`insc-selo insc-selo--${variante}`}>

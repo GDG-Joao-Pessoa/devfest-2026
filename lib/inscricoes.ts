@@ -129,6 +129,15 @@ export type Situacao = {
 
 export const vagasRestantes = (s: Situacao) => Math.max(0, s.vagas - s.confirmadas);
 
+/**
+ * Selo "Últimas vagas": restam 20% das vagas ou menos (no mínimo 2).
+ * Code in the Dark (9 vagas) → 2 ou menos; workshop (40) → 8 ou menos.
+ */
+export const ultimasVagas = (s: Situacao) => {
+  const restantes = vagasRestantes(s);
+  return restantes > 0 && restantes <= Math.max(2, Math.ceil(s.vagas * 0.2));
+};
+
 /** Lugares livres na lista de espera; `null` = sem limite. */
 export const esperaRestante = (s: Situacao) =>
   s.vagas_espera === null ? null : Math.max(0, s.vagas_espera - s.em_espera);

@@ -1378,6 +1378,25 @@ html:has(.spk-dialog[open]) {
   background: rgba(251, 188, 4, 0.1);
   color: #fcc934;
 }
+.insc-selo--ultimas {
+  border: 1px solid rgba(234, 67, 53, 0.55);
+  background: rgba(234, 67, 53, 0.14);
+  color: #ee675c;
+}
+.insc-selo--ultimas .insc-selo-ponto {
+  animation: insc-pulso 1.4s ease-in-out infinite;
+}
+@keyframes insc-pulso {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .insc-selo--ultimas .insc-selo-ponto {
+    animation: none;
+  }
+}
 .insc-selo--encerrada {
   border: 1px solid rgba(234, 67, 53, 0.4);
   background: rgba(234, 67, 53, 0.1);
