@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Sora, Figtree, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
+import { SITE_URL } from '@/lib/data';
 
 const sora = Sora({
   subsets: ['latin'],
@@ -24,7 +25,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://devfest-jp.dev'),
+  metadataBase: new URL(SITE_URL),
   title: 'DevFest João Pessoa 2026 — 20 & 21 Nov · Uniesp',
   description:
     'O maior evento de tecnologia do GDG João Pessoa. Dois dias de palestras, código ao vivo e comunidade — 20 e 21 de novembro de 2026, no Uniesp Centro Universitário.',
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
     title: 'DevFest João Pessoa 2026',
     description:
       'A comunidade de tecnologia e inovação se encontra aqui. 20 & 21 Nov · Uniesp Centro Universitário · João Pessoa · PB.',
-    url: 'https://devfest-jp.dev',
+    url: SITE_URL,
     siteName: 'DevFest João Pessoa 2026',
     locale: 'pt_BR',
     type: 'website',

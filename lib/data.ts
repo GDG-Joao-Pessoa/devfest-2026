@@ -14,8 +14,12 @@ export const EVENT = {
   targetDate: '2026-11-20T09:00:00-03:00',
 } as const;
 
-/** URL pública do site (mesma do `metadataBase` em app/layout.tsx). */
-export const SITE_URL = 'https://devfest-jp.dev';
+/**
+ * URL pública do site: metadados/Open Graph (app/layout.tsx), JSON-LD da
+ * programação e links dos .ics. Os UIDs dos .ics mantêm `@devfest-jp.dev` de
+ * propósito: são só identificadores, e mudá-los duplicaria eventos já importados.
+ */
+export const SITE_URL = 'https://devfestjoaopessoa.gdgjoaopessoa.com.br';
 
 /**
  * Local do evento. Endereço oficial do campus sede (documentos institucionais
