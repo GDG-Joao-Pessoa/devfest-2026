@@ -13,13 +13,5 @@
   },
   "images": {
     "binding": "IMAGES"
-  },
-  // Supabase das inscrições (lib/supabase.ts; OpenNext expõe em process.env).
-  // A chave publishable é pública por design: as tabelas têm RLS fechado e ela
-  // só executa `inscrever` e `situacao_atividade` (supabase/migrations).
-  // NUNCA coloque aqui a secret / service_role key.
-  "vars": {
-    "SUPABASE_URL": "https://yqkfkarhhhcafuneweoa.supabase.co",
-    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_hsqZTiUPRCUUQxULVG8l4w_is7Q1Cje"
   }
 }
