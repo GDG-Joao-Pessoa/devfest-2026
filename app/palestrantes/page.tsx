@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import SpeakerCard from '@/components/SpeakerCard';
 import SpeakerDialogs from '@/components/SpeakerDialogs';
 import { speakers } from '@/lib/speakers';
+import { listSessions } from '@/lib/schedule';
 
 export const metadata: Metadata = {
   title: 'Palestrantes — DevFest João Pessoa 2026',
@@ -52,7 +53,7 @@ export default function PalestrantesPage() {
                 color: 'rgba(242,242,247,.66)',
               }}
             >
-              {speakers.length} palestras e workshops em dois dias. Escolha alguém para ver a bio, a
+              {listSessions().length} palestras e workshops em dois dias. Escolha alguém para ver a bio, a
               palestra e o horário.
             </p>
           </div>

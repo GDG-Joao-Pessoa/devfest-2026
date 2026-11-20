@@ -200,13 +200,6 @@ export const schedule: ScheduleDay[] = [
             format: 'palestra',
             badge: null,
           },
-          {
-            room: 'Auditório Executivo',
-            speakers: ['Airton Lira'],
-            title: 'Além do Harness: Loop Engineering e a Próxima Era dos Agentes de IA',
-            format: 'palestra',
-            badge: null,
-          },
         ],
       },
       {
@@ -256,8 +249,8 @@ export const schedule: ScheduleDay[] = [
         sessions: [
           {
             room: 'Auditório Master',
-            speakers: ['Daniel Pereira'],
-            title: 'Linux por dentro: patches, e-mails e Rust',
+            speakers: ['Angelo F. Dias Gonçalves'],
+            title: 'Injetando acessibilidade com Inteligência Artificial na Esteira de Qualidade',
             format: 'palestra',
             badge: null,
           },
@@ -284,8 +277,8 @@ export const schedule: ScheduleDay[] = [
           },
           {
             room: 'Auditório Executivo',
-            speakers: ['Roberta Nascimento'],
-            title: 'A interface mente: como o design influencia nossas decisões',
+            speakers: ['Aramis Lins'],
+            title: 'De dev a dono: seu próximo projeto pode ser uma empresa',
             format: 'palestra',
             badge: null,
           },
@@ -294,7 +287,7 @@ export const schedule: ScheduleDay[] = [
       {
         time: '15:20',
         type: 'break',
-        label: 'Avisos e Microfone Aberto',
+        label: 'Intervalo',
         room: 'Ambos os auditórios',
       },
       {
