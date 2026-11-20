@@ -1259,6 +1259,11 @@ html:has(.spk-dialog[open]) {
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
+/* Só uma inscrição aberta: card centralizado, na largura de uma coluna */
+.insc-home-grid--um {
+  grid-template-columns: minmax(0, 540px);
+  justify-content: center;
+}
 .insc-home-card {
   position: relative;
   display: flex;

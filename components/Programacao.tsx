@@ -15,6 +15,8 @@ import {
 } from '@/lib/schedule';
 import { GDG, SITE_URL, VENUE } from '@/lib/data';
 import { speakerAnchor, speakerIdForTalk } from '@/lib/speakers';
+import { dentroDaJanela, janelaDe, listaAtividades } from '@/lib/inscricoes';
+import NaJanela from './NaJanela';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -136,16 +138,32 @@ function DaySchedule({ day }: { day: ScheduleDay }) {
             <div className="prog-break-box">
               <span className="prog-break-label">{item.label}</span>
               {item.room && <span className="prog-break-room">{item.room}</span>}
-              {item.href && (
-                <a href={item.href} className="prog-break-link">
-                  Inscreva-se →
-                </a>
-              )}
+              {item.href && <LinkInscricao href={item.href} />}
             </div>
           </LiveBlock>
         );
       })}
     </div>
+  );
+}
+
+/**
+ * Botão "Inscreva-se" de um bloco. Se o link é de uma atividade com inscrição,
+ * só aparece dentro da janela dela (ex.: Code in the Dark a partir de sáb 08:00).
+ */
+function LinkInscricao({ href }: { href: string }) {
+  const link = (
+    <a href={href} className="prog-break-link">
+      Inscreva-se →
+    </a>
+  );
+  const atividade = listaAtividades.find((a) => href === `/inscricoes/${a.rota}`);
+  if (!atividade) return link;
+  const janela = janelaDe(atividade);
+  return (
+    <NaJanela janela={janela} inicial={dentroDaJanela(janela, Date.now())}>
+      {link}
+    </NaJanela>
   );
 }
 
