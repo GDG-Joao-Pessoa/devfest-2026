@@ -80,8 +80,6 @@ export default async function InscricaoPagina({ atividade }: { atividade: Ativid
               <InscricaoForm
                 slug={atividade.slug}
                 titulo={atividade.titulo}
-                campos={atividade.campos}
-                confirmacoes={atividade.confirmacoes}
                 esgotado={esgotado}
                 fechado={encerrada ? 'encerrada' : lotado ? 'lotada' : null}
                 cabecalho={
